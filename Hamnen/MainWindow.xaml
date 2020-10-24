@@ -1,0 +1,158 @@
+﻿<Window x:Class="HarborSimuation.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:HarborSimuation"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="586" Width="886">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.Background>
+            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                <GradientStop Color="#FF0046FF"/>
+                <GradientStop Color="#FF6D68CB" Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
+        <StackPanel Orientation="Horizontal" Margin="138,0,0,1" VerticalAlignment="Bottom" HorizontalAlignment="Left">
+            <StackPanel x:Name="Docks_left" Width="16" Height="512" VerticalAlignment="Top">
+                <Rectangle x:Name="Dock_1" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_2" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_3" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_4" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_5" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_6" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_7" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_8" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_9" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_10" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_11" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_12" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_13" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_14" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_15" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_16" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_17" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_18" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_19" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_20" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_21" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_22" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_23" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_24" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_25" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_26" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_27" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_28" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_29" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_30" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_31" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_32" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_33" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_34" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_35" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_36" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_37" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_38" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_39" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_40" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_41" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_42" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_43" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_44" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_45" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_46" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_47" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_48" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_49" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_50" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_51" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_52" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_53" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_54" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_55" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_56" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_57" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_58" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_59" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_60" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_61" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_62" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_63" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_64" Height="8" Stroke="Black" Width="16"/>
+            </StackPanel>
+            <Rectangle Height="526" Stroke="Black" Width="61" Fill="#FF8F8F8F"/>
+            <StackPanel x:Name="Docks_right" Height="512" Width="16" VerticalAlignment="Top">
+                <Rectangle x:Name="Dock_65" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_66" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_67" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_68" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_69" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_70" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_71" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_72" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_73" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_74" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_75" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_76" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_77" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_78" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_79" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_80" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_81" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_82" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_83" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_84" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_85" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_86" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_87" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_88" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_89" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_90" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_91" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_92" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_93" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_94" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_95" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_96" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_97" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_98" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_99" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_100" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_101" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_102" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_103" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_104" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_105" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_106" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_107" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_108" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_109" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_110" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_111" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_112" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_113" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_114" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_115" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_116" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_117" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_118" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_119" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_120" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_121" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_122" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_123" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_124" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_125" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_126" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_127" Height="8" Stroke="Black" Width="16"/>
+                <Rectangle x:Name="Dock_128" Height="8" Stroke="Black" Width="16"/>
+            </StackPanel>
+        </StackPanel>
+        <ScrollViewer Margin="443,65,71,361">
+            <TextBlock x:Name="Boat_Info" TextWrapping="Wrap" Background="#FF151E78" Foreground="White" FontFamily="Consolas" FontSize="14" Width="Auto"/>
+        </ScrollViewer>
+    </Grid>
+</Window>
