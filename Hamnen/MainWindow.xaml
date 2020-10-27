@@ -151,8 +151,15 @@
                 <Rectangle x:Name="Dock_128" Height="8" Stroke="Black" Width="16"/>
             </StackPanel>
         </StackPanel>
-        <ScrollViewer Margin="443,65,71,361">
-            <TextBlock x:Name="Boat_Info" TextWrapping="Wrap" Background="#FF151E78" Foreground="White" FontFamily="Consolas" FontSize="14" Width="Auto"/>
-        </ScrollViewer>
+        <StackPanel Margin="443,42,71,0">
+            <ScrollViewer Height="144" Width="372">
+                <TextBlock x:Name="Boat_Info" TextWrapping="Wrap" Background="#FF151E78" Foreground="White" FontFamily="Consolas" FontSize="14" Width="Auto"/>
+            </ScrollViewer>
+            <StackPanel Height="100"/>
+            <StackPanel Height="42" Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button x:Name="Start_stop_button" Content="Start" Width="186" Click="StartStopButton_Click"/>
+                <Button Content="Reset" Width="186"/>
+            </StackPanel>
+        </StackPanel>
     </Grid>
 </Window>

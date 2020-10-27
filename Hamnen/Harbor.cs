@@ -10,10 +10,18 @@ namespace HarborSimuation
     {
         public (Dock[] DocksLeft, Dock[] DocksRight) Docks = (new Dock[32], new Dock[32]);
 
+        bool runLoop = false;
+
+
 
         public Harbor()
         {
             BuildDocks();
+        }
+
+        public void Run()
+        {
+
         }
 
         private void BuildDocks()

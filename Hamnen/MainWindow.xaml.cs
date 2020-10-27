@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.ComponentModel;
 
 namespace HarborSimuation
 {
@@ -20,45 +21,29 @@ namespace HarborSimuation
     /// </summary>
     public partial class MainWindow : Window
     {
+        bool runLoop = false;
+
+        BackgroundWorker backgroundWorker = new BackgroundWorker();
+
+        Harbor harbor = new Harbor();
+
         public MainWindow()
         {
             InitializeComponent();
 
-            Harbor harbor = new Harbor();
+          
 
-            harbor.NextDay(5);
-
-
-            //harbor.Docks.DocksLeft[0].OccupiedBy = new RowingBoat("RB-L");
-            //harbor.Docks.DocksLeft[0].OtherRowingBoat = new RowingBoat("RB-L");
-            //harbor.Docks.DocksLeft[1].OccupiedBy = new RowingBoat("RB-L");
-            //harbor.Docks.DocksLeft[2].OccupiedBy = new RowingBoat("RB-L");
-            //harbor.Docks.DocksLeft[3].OccupiedBy = new SailingBoat("SB-L");
-
-            //harbor.Docks.DocksRight[0].OccupiedBy = new RowingBoat("RB-R");
-            //harbor.Docks.DocksRight[31].OccupiedBy = new SailingBoat("SB-R");
-
-            
-
-
-
-            // Boat info text
-
-            foreach (Dock d in harbor.Docks.DocksLeft.Where(d => d.IsOccupied))
-            {
-                ShowBoat(Docks_left, d);
-                Boat_Info.Text += d.OccupiedBy.ID + "\n";
-            }
-            foreach (Dock d in harbor.Docks.DocksRight.Where(d => d.IsOccupied))
-            {
-                ShowBoat(Docks_right, d);
-                Boat_Info.Text += d.OccupiedBy.ID + "\n";
-            }
+            backgroundWorker.DoWork += BackgroundWorker_DoWork;
+            backgroundWorker.ProgressChanged += BackgroundWorker_ProgressChanged;
+            backgroundWorker.WorkerSupportsCancellation = true;
+            backgroundWorker.WorkerReportsProgress = true;
 
 
         }
 
-        public void ShowBoat(StackPanel stackPanelDocks, Dock d)
+
+
+        private void ShowBoat(StackPanel stackPanelDocks, Dock d)
         {
             // TODO: cases for boate types
 
@@ -70,6 +55,65 @@ namespace HarborSimuation
                 Rectangle r2 = stackPanelDocks.FindName("Dock_" + (d.DockNumber * 2 - 1)) as Rectangle;
                 r2.Fill = Brushes.Black;
             }
+        }
+
+        private void StartStopButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!runLoop)
+                runLoop = true;
+            else if (runLoop)
+                runLoop = false;
+
+            if (!backgroundWorker.IsBusy)
+            {
+                backgroundWorker.RunWorkerAsync();
+                Start_stop_button.Content = "Stop";
+            }
+            else
+            {
+                backgroundWorker.CancelAsync();
+                Start_stop_button.Content = "Start";
+            }
+        }
+
+        private void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+
+            while (runLoop)
+            {
+
+                //harbor.NextDay(5);
+
+                //foreach (Dock d in harbor.Docks.DocksLeft.Where(d => d.IsOccupied))
+                //{
+                //    ShowBoat(Docks_left, d);
+                //    //Boat_Info.Text += d.OccupiedBy.ID + "\n";
+                //}
+                //foreach (Dock d in harbor.Docks.DocksRight.Where(d => d.IsOccupied))
+                //{
+                //    ShowBoat(Docks_right, d);
+                //    //Boat_Info.Text += d.OccupiedBy.ID + "\n";
+                //}
+
+                backgroundWorker.ReportProgress(1);
+
+
+
+                if (backgroundWorker.CancellationPending)
+                {
+                    break;
+                }
+
+                System.Threading.Thread.Sleep(3000);
+            }
+
+        }
+
+        private void BackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            Boat_Info.Text += "new day \n";
+
+
         }
     }
 }
