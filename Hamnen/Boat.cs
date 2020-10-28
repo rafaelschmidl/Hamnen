@@ -11,25 +11,8 @@ namespace HarborSimuation
         public string ID { get; set; }
         public int DaysBeforeDeparture { get; set; }
         public int Weight { get; set; }
+        public double Size { get; set; }
         public int MaxSpeedKnots { get; set; }
-
-        private static Random random = new Random();
-
-
-        public Boat(string idPrefix)
-        {
-            ID = GenerateID(idPrefix);
-
-
-        }
-
-        public string GenerateID(string idPrefix)
-        {
-            return idPrefix + "-" + Utils.RandomUppercaseString(3);
-        }
-
-
-
 
     }
 }

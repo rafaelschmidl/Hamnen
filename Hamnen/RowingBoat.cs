@@ -7,9 +7,10 @@ namespace HarborSimuation
     public class RowingBoat : Boat
     {
 
-        public RowingBoat(string idPrefix) : base(idPrefix)
+        public RowingBoat()
         {
-
+            ID = Utils.GenerateID("RB");
+            Size = 0.5;
         }
 
     }

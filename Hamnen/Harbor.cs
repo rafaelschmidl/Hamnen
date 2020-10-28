@@ -10,18 +10,11 @@ namespace HarborSimuation
     {
         public (Dock[] DocksLeft, Dock[] DocksRight) Docks = (new Dock[32], new Dock[32]);
 
-        bool runLoop = false;
-
 
 
         public Harbor()
         {
             BuildDocks();
-        }
-
-        public void Run()
-        {
-
         }
 
         private void BuildDocks()
@@ -45,17 +38,102 @@ namespace HarborSimuation
             //Docks.DocksLeft.ForEach(d => d.OccupiedBy.DaysBeforeDeparture--);
             //Docks.DocksRight.ForEach(d => d.OccupiedBy.DaysBeforeDeparture--);
 
-            PlaceIncomingBoatsInDocks(GenerateIncomingBoats(incomingBoatsPerDay));
+            DockIncomingBoats(GenerateIncomingBoats(incomingBoatsPerDay));
         }
 
-        public void PlaceIncomingBoatsInDocks(List<Boat> incomingBoats)
+
+        public void DockIncomingBoats(List<Boat> incomingBoats)
         {
-            int i = 0;
-            incomingBoats.ForEach(b =>
+            incomingBoats.ForEach(boat => DockBoat(boat));
+        }
+
+        private void DockBoat(Boat boat)
+        {
+            bool canDock = false;
+
+            if (boat.Size > 2)
             {
-                Docks.DocksLeft[i].OccupiedBy = b;
-                i++;
-            });
+
+                for (int i = 0; i < Docks.DocksLeft.Length; i++)
+                {
+                    if (!Docks.DocksLeft[i].IsOccupied && i + boat.Size < Docks.DocksLeft.Length)
+                    {
+                        canDock = true;
+                        for (int j = 1; j < boat.Size; j++) 
+                            if (Docks.DocksLeft[i + j].IsOccupied) 
+                                canDock = false;
+                        if (canDock)
+                        {
+                            for (int k = 0; k < boat.Size; k++)
+                                Docks.DocksLeft[i + k].OccupiedBy = boat;
+                            break;
+                        }
+                    }
+                }
+                if (!canDock)
+                {
+                    for (int i = Docks.DocksRight.Length - 1; i >= 0; i--)
+                    {
+                        if (!Docks.DocksRight[i].IsOccupied && i - boat.Size + 1 >= 0)
+                        {
+                            canDock = true;
+                            for (int j = (int)boat.Size - 1; j >= 0; j--)
+                                if (Docks.DocksRight[i - j].IsOccupied)
+                                    canDock = false;
+                            if (canDock)
+                            {
+                                for (int k = (int)boat.Size - 1; k >= 0; k--)
+                                    Docks.DocksRight[i - k].OccupiedBy = boat;
+                                break;
+                            }
+
+                        }
+                    }
+
+                }
+            }
+            else
+            {
+
+                for (int i = 0; i < Docks.DocksRight.Length; i++)
+                {
+                    if (!Docks.DocksRight[i].IsOccupied && i + boat.Size < Docks.DocksRight.Length)
+                    {
+                        canDock = true;
+                        for (int j = 1; j < boat.Size; j++)
+                            if (Docks.DocksRight[i + j].IsOccupied)
+                                canDock = false;
+                        if (canDock)
+                        {
+                            for (int k = 0; k < boat.Size; k++)
+                                Docks.DocksRight[i + k].OccupiedBy = boat;
+                            break;
+                        }
+                    }
+                }
+                if (!canDock)
+                {
+                    for (int i = Docks.DocksLeft.Length - 1; i >= 0; i--)
+                    {
+                        if (!Docks.DocksLeft[i].IsOccupied && i - boat.Size + 1 >= 0)
+                        {
+                            canDock = true;
+                            for (int j = (int)boat.Size - 1; j >= 0; j--)
+                                if (Docks.DocksLeft[i - j].IsOccupied)
+                                    canDock = false;
+                            if (canDock)
+                            {
+                                for (int k = (int)boat.Size - 1; k >= 0; k--)
+                                    Docks.DocksLeft[i - k].OccupiedBy = boat;
+                                break;
+                            }
+
+                        }
+                    }
+
+                }
+
+            }
         }
 
         public List<Boat> GenerateIncomingBoats(int numberOfIncomingBoats)
@@ -71,19 +149,19 @@ namespace HarborSimuation
                 switch (rnd)
                 {
                     case 1:
-                        boats.Add(new RowingBoat("RB"));
+                        boats.Add(new RowingBoat());
                         break;
                     case 2:
-                        boats.Add(new MotorBoat("MB"));
+                        boats.Add(new MotorBoat());
                         break;
                     case 3:
-                        boats.Add(new SailingBoat("SB"));
+                        boats.Add(new SailingBoat());
                         break;
                     case 4:
-                        boats.Add(new Catamaran("CM"));
+                        boats.Add(new Catamaran());
                         break;
                     case 5:
-                        boats.Add(new CargoShip("CS"));
+                        boats.Add(new CargoShip());
                         break;
                 }
             }

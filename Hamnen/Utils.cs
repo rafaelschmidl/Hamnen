@@ -20,5 +20,10 @@ namespace HarborSimuation
             return new string(Enumerable.Repeat(chars, length)
               .Select(s => s[RandomNumberInRange(0, s.Length - 1)]).ToArray());
         }
+
+        public static string GenerateID(string idPrefix)
+        {
+            return idPrefix + "-" + RandomUppercaseString(3);
+        }
     }
 }
