@@ -12,39 +12,50 @@ namespace HarborSimuation
 {
     public class Harbor
     {
-        public Dock[] DocksLeft => docksLeft;
-        public Dock[] DocksRight => docksRight;
-
-        private Dock[] docksLeft;
-        private Dock[] docksRight;
+        public Dock[] DocksLeft { get; }
+        public Dock[] DocksRight { get; }
 
         public Harbor()
         {
-            docksLeft = new Dock[32];
-            docksRight = new Dock[32];
-            try
-            {
-                docksLeft = GetDocksFromJsonFile("docks_left");
-                docksRight = GetDocksFromJsonFile("docks_right");
-            }
-            catch
-            {
-                ConstructDocks();
-            }
-        }
+            DocksLeft = new Dock[32];
+            DocksRight = new Dock[32];
 
-        public void ResetDocks()
-        {
-            ConstructDocks();
-            SetDocksToJsonFile(docksLeft, "docks_left");
-            SetDocksToJsonFile(docksRight, "docks_right");
+            if (!File.Exists(@"data/docks_left.json") || !File.Exists(@"data/docks_left.json"))
+                ConstructDocks();
+            else
+            {
+                DocksLeft = GetDocksFromJsonFile(@"data/docks_left.json");
+                DocksRight = GetDocksFromJsonFile(@"data/docks_right.json");
+            }
         }
 
         public void NextDay(int numberOfIncomingBoats)
         {
             DockIncomingBoats(GenerateIncomingBoats(numberOfIncomingBoats));
-            SetDocksToJsonFile(docksLeft, "docks_left");
-            SetDocksToJsonFile(docksRight, "docks_right");
+            SetDocksToJsonFile(DocksLeft, @"data/docks_left.json");
+            SetDocksToJsonFile(DocksRight, @"data/docks_right.json");
+        }
+
+        public void ClearDocks()
+        {
+            ConstructDocks();
+            SetDocksToJsonFile(DocksLeft, @"data/docks_left.json");
+            SetDocksToJsonFile(DocksRight, @"data/docks_right.json");
+        }
+
+        private void ConstructDocks()
+        {
+            for (int i = 0; i < DocksLeft.Length + DocksRight.Length; i++)
+            {
+                if (i < DocksLeft.Length)
+                {
+                    DocksLeft[i] = new Dock(i + 1);
+                }
+                else
+                {
+                    DocksRight[i - DocksLeft.Length] = new Dock(i + 1);
+                }
+            }
         }
 
         private void DockIncomingBoats(List<Boat> incomingBoats)
@@ -97,21 +108,6 @@ namespace HarborSimuation
             }
         }
 
-        private void ConstructDocks()
-        {
-            for (int i = 0; i < docksLeft.Length + docksRight.Length; i++)
-            {
-                if (i < docksLeft.Length)
-                {
-                    docksLeft[i] = new Dock(i + 1);
-                }
-                else
-                {
-                    docksRight[i - docksLeft.Length] = new Dock(i + 1);
-                }
-            }
-        }
-
         public List<Boat> GenerateIncomingBoats(int numberOfIncomingBoats)
         {
             List<Boat> incomingBoats = new List<Boat>(numberOfIncomingBoats);
@@ -144,15 +140,15 @@ namespace HarborSimuation
             return incomingBoats;
         }
 
-        private void SetDocksToJsonFile(Dock[] docks, string fileName)
+        private void SetDocksToJsonFile(Dock[] docks, string filePath)
         {
-            using StreamWriter sw = new StreamWriter(@"data/" + fileName + ".json", false);
+            using StreamWriter sw = new StreamWriter(filePath, false);
             sw.Write(JsonSerializer.Serialize(docks));
         }
 
-        private Dock[] GetDocksFromJsonFile(string fileName)
+        private Dock[] GetDocksFromJsonFile(string filePath)
         {
-            using StreamReader sr = File.OpenText(@"data/" + fileName + ".json");
+            using StreamReader sr = File.OpenText(filePath);
             return JsonSerializer.Deserialize<Dock[]>(sr.ReadToEnd());
         }
 

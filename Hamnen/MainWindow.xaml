@@ -152,13 +152,13 @@
             </StackPanel>
         </StackPanel>
         <StackPanel Margin="443,42,71,0">
-            <ScrollViewer Height="144" Width="372">
+            <ScrollViewer Height="420" Width="372">
                 <TextBlock x:Name="Boat_Info" TextWrapping="Wrap" Background="#FF151E78" Foreground="White" FontFamily="Consolas" FontSize="14" Width="Auto"/>
             </ScrollViewer>
-            <StackPanel Height="100"/>
+            <StackPanel Height="33"/>
             <StackPanel Height="42" Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button x:Name="Start_stop_button" Content="Start" Width="186" Click="StartStopButton_Click"/>
-                <Button Content="Reset" Width="186" Click="ResetButton_Click"/>
+                <Button x:Name="Reset_button" Content="Clear" Width="186" Click="ClearButton_Click"/>
             </StackPanel>
         </StackPanel>
     </Grid>

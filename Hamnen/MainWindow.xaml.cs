@@ -13,6 +13,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.ComponentModel;
+using System.IO;
+using System.Text.Json;
 
 namespace HarborSimuation
 {
@@ -35,7 +37,8 @@ namespace HarborSimuation
 
             PaintOrEraseBoats();
 
-
+            if (File.Exists(@"data/boat_info.json"))
+                Boat_Info.Text = GetBoatInfoFromJsonFile(@"data/boat_info.json");
 
         }
 
@@ -53,17 +56,25 @@ namespace HarborSimuation
             }
         }
 
-        private void ResetButton_Click(object sender, RoutedEventArgs e)
+        private void ClearButton_Click(object sender, RoutedEventArgs e)
         {
-            harbor.ResetDocks();
+            harbor.ClearDocks();
             PaintOrEraseBoats();
+            Boat_Info.Text = "";
+            SetBoatInfoToJsonFile(Boat_Info.Text, @"data/boat_info.json");
+
+            if (backgroundWorker.IsBusy)
+            {
+                backgroundWorker.CancelAsync();
+                Start_stop_button.Content = "Start";
+            }
         }
 
         private void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             while (true)
             {
-                if (backgroundWorker.CancellationPending) 
+                if (backgroundWorker.CancellationPending)
                     break;
                 backgroundWorker.ReportProgress(0);
                 System.Threading.Thread.Sleep(500);
@@ -72,9 +83,11 @@ namespace HarborSimuation
 
         private void BackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            Boat_Info.Text += "new day \n";
+            
             harbor.NextDay(1);
             PaintOrEraseBoats();
+            Boat_Info.Text += "new day \n";
+            SetBoatInfoToJsonFile(Boat_Info.Text, @"data/boat_info.json");
         }
 
         private void PaintOrEraseBoats()
@@ -133,6 +146,16 @@ namespace HarborSimuation
             }
         }
 
+        private void SetBoatInfoToJsonFile(string boatInfo, string filePath)
+        {
+            using StreamWriter sw = new StreamWriter(filePath, false);
+            sw.Write(JsonSerializer.Serialize(boatInfo));
+        }
 
+        private string GetBoatInfoFromJsonFile(string filePath)
+        {
+            using StreamReader sr = File.OpenText(filePath);
+            return JsonSerializer.Deserialize<string>(sr.ReadToEnd());
+        }
     }
 }
