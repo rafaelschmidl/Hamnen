@@ -9,9 +9,9 @@ namespace HarborSimuation
     public class Boat
     {
         public string Id { get; set; }
-        public double Size { get; set; }
-        public int DaysBeforeDeparture { get; set; }
+        public int Size { get; set; }
         public int Weight { get; set; }
         public int MaxSpeedKnots { get; set; }
+        public int DaysBeforeDeparture { get; set; }
     }
 }

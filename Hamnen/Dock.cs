@@ -40,9 +40,22 @@ namespace HarborSimuation
             OccupiedBy = boat;
         }
 
+        public void DecrementDaysBeforeDeparture()
+        {
+            if (OccupiedBy != null)
+                OccupiedBy.DaysBeforeDeparture--;
+            if (OtherRowingBoat != null)
+                OtherRowingBoat.DaysBeforeDeparture--;
+        }
+
         public void DepartBoat()
         {
-            OccupiedBy = null;
+            if (OccupiedBy != null)
+                if (OccupiedBy.DaysBeforeDeparture < 0)
+                    OccupiedBy = null;
+            if (OtherRowingBoat != null)
+                if (OtherRowingBoat.DaysBeforeDeparture < 0)
+                    OtherRowingBoat = null;
         }
 
         public void DockSecondRowingBoat(RowingBoat rowingBoat)

@@ -21,7 +21,11 @@ namespace HarborSimuation
             DocksRight = new Dock[32];
 
             if (!File.Exists(@"data/docks_left.json") || !File.Exists(@"data/docks_left.json"))
+            {
                 ConstructDocks();
+                SetDocksToJsonFile(DocksLeft, @"data/docks_left.json");
+                SetDocksToJsonFile(DocksRight, @"data/docks_right.json");
+            }
             else
             {
                 DocksLeft = GetDocksFromJsonFile(@"data/docks_left.json");
@@ -31,9 +35,37 @@ namespace HarborSimuation
 
         public void NextDay(int numberOfIncomingBoats)
         {
+            BoatDeparter(DocksLeft);
+            BoatDeparter(DocksRight);
             DockIncomingBoats(GenerateIncomingBoats(numberOfIncomingBoats));
+            
             SetDocksToJsonFile(DocksLeft, @"data/docks_left.json");
             SetDocksToJsonFile(DocksRight, @"data/docks_right.json");
+        }
+
+        private void BoatDeparter(Dock[] docks)
+        {
+            for (int i = 0; i < docks.Length; i++)
+            {
+                if (docks[i].IsOccupied())
+                {
+                    docks[i].DecrementDaysBeforeDeparture();
+
+                    if (docks[i].OccupiedBy != null)
+                    {
+                        int nDocks = docks[i].OccupiedBy.Size;
+                        docks[i].DepartBoat();
+
+                        for (int j = 1; j < nDocks; j++)
+                        {
+                            i++;
+                            docks[i].DepartBoat();
+                        }
+                    }
+                    else if (docks[i].OccupiedBy == null && docks[i].OtherRowingBoat != null)
+                        docks[i].DepartBoat();
+                }
+            }
         }
 
         public void ClearDocks()

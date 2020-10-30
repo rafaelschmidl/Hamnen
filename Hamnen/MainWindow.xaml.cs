@@ -77,16 +77,23 @@ namespace HarborSimuation
                 if (backgroundWorker.CancellationPending)
                     break;
                 backgroundWorker.ReportProgress(0);
-                System.Threading.Thread.Sleep(500);
+                System.Threading.Thread.Sleep(1000);
             }
         }
 
         private void BackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            
-            harbor.NextDay(1);
-            PaintOrEraseBoats();
+            harbor.NextDay(5);
+
+            Boat_Info.Text = "";
             Boat_Info.Text += "new day \n";
+            harbor.DocksLeft.Where(d => d.IsOccupied()).ToList()
+                .ForEach(d => Boat_Info.Text += d.IdNumber + " " + d.OccupiedBy.Id + " " + d.OccupiedBy.DaysBeforeDeparture.ToString() + "\n");
+            harbor.DocksRight.Where(d => d.IsOccupied()).ToList()
+                .ForEach(d => Boat_Info.Text += d.IdNumber + " " + d.OccupiedBy.Id + " " + d.OccupiedBy.DaysBeforeDeparture.ToString() + "\n");
+
+            PaintOrEraseBoats();
+
             SetBoatInfoToJsonFile(Boat_Info.Text, @"data/boat_info.json");
         }
 
@@ -134,8 +141,6 @@ namespace HarborSimuation
                 }
             }
 
-
-
             Rectangle r1 = stackPanelDocks.FindName("Dock_" + d.IdNumber * 2) as Rectangle;
             r1.Fill = brush;
 
@@ -143,6 +148,11 @@ namespace HarborSimuation
             {
                 Rectangle r2 = stackPanelDocks.FindName("Dock_" + (d.IdNumber * 2 - 1)) as Rectangle;
                 r2.Fill = brush;
+            }
+            else
+            {
+                Rectangle r2 = stackPanelDocks.FindName("Dock_" + (d.IdNumber * 2 - 1)) as Rectangle;
+                r2.Fill = null;
             }
         }
 
