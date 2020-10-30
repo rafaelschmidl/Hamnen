@@ -21,71 +21,26 @@ namespace HarborSimuation
     /// </summary>
     public partial class MainWindow : Window
     {
-        bool runLoop = false;
-
-        BackgroundWorker backgroundWorker = new BackgroundWorker();
-
-        Harbor harbor = new Harbor();
+        private Harbor harbor = new Harbor();
+        private BackgroundWorker backgroundWorker = new BackgroundWorker();
 
         public MainWindow()
         {
             InitializeComponent();
 
-          
-
             backgroundWorker.DoWork += BackgroundWorker_DoWork;
-            backgroundWorker.WorkerSupportsCancellation = true;
             backgroundWorker.ProgressChanged += BackgroundWorker_ProgressChanged;
+            backgroundWorker.WorkerSupportsCancellation = true;
             backgroundWorker.WorkerReportsProgress = true;
 
-
-        }
-
+            PaintOrEraseBoats();
 
 
-        private void ShowBoat(StackPanel stackPanelDocks, Dock d)
-        {
-            Brush brush;
-            switch (d.OccupiedBy.GetType().Name)
-            {
-                case "RowingBoat":
-                    brush = Brushes.Yellow;
-                    break;
-                case "MotorBoat":
-                    brush = Brushes.DarkSeaGreen;
-                    break;
-                case "SailingBoat":
-                    brush = Brushes.Azure;
-                    break;
-                case "Catamaran":
-                    brush = Brushes.Goldenrod;
-                    break;
-                case "CargoShip":
-                    brush = Brushes.Black;
-                    break;
-                default:
-                    brush = Brushes.Green;
-                    break;
-            }
 
-
-            Rectangle r1 = stackPanelDocks.FindName("Dock_" + d.DockNumber * 2) as Rectangle;
-            r1.Fill = brush;
-
-            if (!d.HasPlaceForeSecondRowingBoat)
-            {
-                Rectangle r2 = stackPanelDocks.FindName("Dock_" + (d.DockNumber * 2 - 1)) as Rectangle;
-                r2.Fill = brush;
-            }
         }
 
         private void StartStopButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!runLoop)
-                runLoop = true;
-            else if (runLoop)
-                runLoop = false;
-
             if (!backgroundWorker.IsBusy)
             {
                 backgroundWorker.RunWorkerAsync();
@@ -96,6 +51,12 @@ namespace HarborSimuation
                 backgroundWorker.CancelAsync();
                 Start_stop_button.Content = "Start";
             }
+        }
+
+        private void ResetButton_Click(object sender, RoutedEventArgs e)
+        {
+            harbor.ResetDocks();
+            PaintOrEraseBoats();
         }
 
         private void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
@@ -112,21 +73,66 @@ namespace HarborSimuation
         private void BackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             Boat_Info.Text += "new day \n";
-
             harbor.NextDay(1);
-
-            foreach (Dock d in harbor.Docks.DocksLeft.Where(d => d.IsOccupied))
-            {
-                ShowBoat(Docks_left, d);
-                
-            }
-            foreach (Dock d in harbor.Docks.DocksRight.Where(d => d.IsOccupied))
-            {
-                ShowBoat(Docks_right, d);
-
-
-            }
-
+            PaintOrEraseBoats();
         }
+
+        private void PaintOrEraseBoats()
+        {
+            foreach (Dock d in harbor.DocksLeft)
+            {
+                PaintOrEraseBoat(Docks_left, d);
+            }
+            foreach (Dock d in harbor.DocksRight)
+            {
+                PaintOrEraseBoat(Docks_right, d);
+            }
+        }
+
+        private void PaintOrEraseBoat(StackPanel stackPanelDocks, Dock d)
+        {
+            Brush brush;
+            if (!d.IsOccupied())
+            {
+                brush = null;
+            }
+            else
+            {
+                switch (d.OccupiedBy.Id.Substring(0, 2))
+                {
+                    case "RB":
+                        brush = Brushes.Yellow;
+                        break;
+                    case "MB":
+                        brush = Brushes.DarkSeaGreen;
+                        break;
+                    case "SB":
+                        brush = Brushes.Azure;
+                        break;
+                    case "CM":
+                        brush = Brushes.Goldenrod;
+                        break;
+                    case "CS":
+                        brush = Brushes.Black;
+                        break;
+                    default:
+                        brush = Brushes.Green;
+                        break;
+                }
+            }
+
+
+
+            Rectangle r1 = stackPanelDocks.FindName("Dock_" + d.IdNumber * 2) as Rectangle;
+            r1.Fill = brush;
+
+            if (!d.HasPlaceForSecondRowingBoat())
+            {
+                Rectangle r2 = stackPanelDocks.FindName("Dock_" + (d.IdNumber * 2 - 1)) as Rectangle;
+                r2.Fill = brush;
+            }
+        }
+
+
     }
 }

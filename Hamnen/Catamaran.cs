@@ -8,7 +8,7 @@ namespace HarborSimuation
     {
         public Catamaran()
         {
-            ID = Utils.GenerateID("CM");
+            Id = Utils.GenerateID("CM");
             Size = 3;
         }
     }

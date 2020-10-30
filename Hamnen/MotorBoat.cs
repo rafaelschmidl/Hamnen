@@ -8,7 +8,7 @@ namespace HarborSimuation
     {
         public MotorBoat()
         {
-            ID = Utils.GenerateID("MB");
+            Id = Utils.GenerateID("MB");
             Size = 1;
 
         }

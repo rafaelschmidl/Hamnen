@@ -8,7 +8,7 @@ namespace HarborSimuation
     {
         public CargoShip()
         {
-            ID = Utils.GenerateID("CS");
+            Id = Utils.GenerateID("CS");
             Size = 4;
         }
     }

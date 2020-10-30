@@ -9,7 +9,7 @@ namespace HarborSimuation
 
         public RowingBoat()
         {
-            ID = Utils.GenerateID("RB");
+            Id = Utils.GenerateID("RB");
             Size = 0.5;
         }
 

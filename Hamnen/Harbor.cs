@@ -3,170 +3,157 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using System.Windows.Controls;
+using System.IO;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Diagnostics;
 
 namespace HarborSimuation
 {
     public class Harbor
     {
-        public (Dock[] DocksLeft, Dock[] DocksRight) Docks = (new Dock[32], new Dock[32]);
+        public Dock[] DocksLeft => docksLeft;
+        public Dock[] DocksRight => docksRight;
 
-
+        private Dock[] docksLeft;
+        private Dock[] docksRight;
 
         public Harbor()
         {
-            BuildDocks();
+            docksLeft = new Dock[32];
+            docksRight = new Dock[32];
+            try
+            {
+                docksLeft = GetDocksFromJsonFile("docks_left");
+                docksRight = GetDocksFromJsonFile("docks_right");
+            }
+            catch
+            {
+                ConstructDocks();
+            }
         }
 
-        private void BuildDocks()
+        public void ResetDocks()
         {
-            for (int i = 0; i < Docks.DocksLeft.Length + Docks.DocksRight.Length; i++)
+            ConstructDocks();
+            SetDocksToJsonFile(docksLeft, "docks_left");
+            SetDocksToJsonFile(docksRight, "docks_right");
+        }
+
+        public void NextDay(int numberOfIncomingBoats)
+        {
+            DockIncomingBoats(GenerateIncomingBoats(numberOfIncomingBoats));
+            SetDocksToJsonFile(docksLeft, "docks_left");
+            SetDocksToJsonFile(docksRight, "docks_right");
+        }
+
+        private void DockIncomingBoats(List<Boat> incomingBoats)
+        {
+            incomingBoats.ForEach(boat => {
+                if (boat.Size > 2)
+                    DockBoat(boat, DocksLeft, DocksRight);
+                else
+                    DockBoat(boat, DocksRight, DocksLeft);
+            });
+        }
+
+        private void DockBoat(Boat boat, Dock[] primaryDocks, Dock[] secondaryDocks)
+        {
+            bool canDock = false;
+            for (int i = 0; i < primaryDocks.Length; i++)
             {
-                if (i < Docks.DocksLeft.Length)
+                if (!primaryDocks[i].IsOccupied() && i + boat.Size < primaryDocks.Length)
                 {
-                    Docks.DocksLeft[i] = new Dock(i + 1);
+                    canDock = true;
+                    for (int j = 1; j < boat.Size; j++)
+                        if (primaryDocks[i + j].IsOccupied())
+                            canDock = false;
+                    if (canDock)
+                    {
+                        for (int k = 0; k < boat.Size; k++)
+                            primaryDocks[i + k].OccupiedBy = boat;
+                        break;
+                    }
+                }
+            }
+            if (!canDock)
+            {
+                for (int i = secondaryDocks.Length - 1; i >= 0; i--)
+                {
+                    if (!secondaryDocks[i].IsOccupied() && i - boat.Size + 1 >= 0)
+                    {
+                        canDock = true;
+                        for (int j = (int)boat.Size - 1; j >= 0; j--)
+                            if (secondaryDocks[i - j].IsOccupied())
+                                canDock = false;
+                        if (canDock)
+                        {
+                            for (int k = (int)boat.Size - 1; k >= 0; k--)
+                                secondaryDocks[i - k].OccupiedBy = boat;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        private void ConstructDocks()
+        {
+            for (int i = 0; i < docksLeft.Length + docksRight.Length; i++)
+            {
+                if (i < docksLeft.Length)
+                {
+                    docksLeft[i] = new Dock(i + 1);
                 }
                 else
                 {
-                    Docks.DocksRight[i - Docks.DocksLeft.Length] = new Dock(i + 1);
+                    docksRight[i - docksLeft.Length] = new Dock(i + 1);
                 }
-            }
-        }
-
-        public void NextDay(int incomingBoatsPerDay)
-        {
-
-            //Docks.DocksLeft.ForEach(d => d.OccupiedBy.DaysBeforeDeparture--);
-            //Docks.DocksRight.ForEach(d => d.OccupiedBy.DaysBeforeDeparture--);
-
-            DockIncomingBoats(GenerateIncomingBoats(incomingBoatsPerDay));
-        }
-
-
-        public void DockIncomingBoats(List<Boat> incomingBoats)
-        {
-            incomingBoats.ForEach(boat => DockBoat(boat));
-        }
-
-        private void DockBoat(Boat boat)
-        {
-            bool canDock = false;
-
-            if (boat.Size > 2)
-            {
-
-                for (int i = 0; i < Docks.DocksLeft.Length; i++)
-                {
-                    if (!Docks.DocksLeft[i].IsOccupied && i + boat.Size < Docks.DocksLeft.Length)
-                    {
-                        canDock = true;
-                        for (int j = 1; j < boat.Size; j++) 
-                            if (Docks.DocksLeft[i + j].IsOccupied) 
-                                canDock = false;
-                        if (canDock)
-                        {
-                            for (int k = 0; k < boat.Size; k++)
-                                Docks.DocksLeft[i + k].OccupiedBy = boat;
-                            break;
-                        }
-                    }
-                }
-                if (!canDock)
-                {
-                    for (int i = Docks.DocksRight.Length - 1; i >= 0; i--)
-                    {
-                        if (!Docks.DocksRight[i].IsOccupied && i - boat.Size + 1 >= 0)
-                        {
-                            canDock = true;
-                            for (int j = (int)boat.Size - 1; j >= 0; j--)
-                                if (Docks.DocksRight[i - j].IsOccupied)
-                                    canDock = false;
-                            if (canDock)
-                            {
-                                for (int k = (int)boat.Size - 1; k >= 0; k--)
-                                    Docks.DocksRight[i - k].OccupiedBy = boat;
-                                break;
-                            }
-
-                        }
-                    }
-
-                }
-            }
-            else
-            {
-
-                for (int i = 0; i < Docks.DocksRight.Length; i++)
-                {
-                    if (!Docks.DocksRight[i].IsOccupied && i + boat.Size < Docks.DocksRight.Length)
-                    {
-                        canDock = true;
-                        for (int j = 1; j < boat.Size; j++)
-                            if (Docks.DocksRight[i + j].IsOccupied)
-                                canDock = false;
-                        if (canDock)
-                        {
-                            for (int k = 0; k < boat.Size; k++)
-                                Docks.DocksRight[i + k].OccupiedBy = boat;
-                            break;
-                        }
-                    }
-                }
-                if (!canDock)
-                {
-                    for (int i = Docks.DocksLeft.Length - 1; i >= 0; i--)
-                    {
-                        if (!Docks.DocksLeft[i].IsOccupied && i - boat.Size + 1 >= 0)
-                        {
-                            canDock = true;
-                            for (int j = (int)boat.Size - 1; j >= 0; j--)
-                                if (Docks.DocksLeft[i - j].IsOccupied)
-                                    canDock = false;
-                            if (canDock)
-                            {
-                                for (int k = (int)boat.Size - 1; k >= 0; k--)
-                                    Docks.DocksLeft[i - k].OccupiedBy = boat;
-                                break;
-                            }
-
-                        }
-                    }
-
-                }
-
             }
         }
 
         public List<Boat> GenerateIncomingBoats(int numberOfIncomingBoats)
         {
-            List<Boat> boats = new List<Boat>(numberOfIncomingBoats);
+            List<Boat> incomingBoats = new List<Boat>(numberOfIncomingBoats);
 
             int rnd;
 
             for (int i = 0; i < numberOfIncomingBoats; i++)
             {
                 rnd = Utils.RandomNumberInRange(1, 5);
-
                 switch (rnd)
                 {
                     case 1:
-                        boats.Add(new RowingBoat());
+                        incomingBoats.Add(new RowingBoat());
                         break;
                     case 2:
-                        boats.Add(new MotorBoat());
+                        incomingBoats.Add(new MotorBoat());
                         break;
                     case 3:
-                        boats.Add(new SailingBoat());
+                        incomingBoats.Add(new SailingBoat());
                         break;
                     case 4:
-                        boats.Add(new Catamaran());
+                        incomingBoats.Add(new Catamaran());
                         break;
                     case 5:
-                        boats.Add(new CargoShip());
+                        incomingBoats.Add(new CargoShip());
                         break;
                 }
             }
 
-            return boats;
+            return incomingBoats;
+        }
+
+        private void SetDocksToJsonFile(Dock[] docks, string fileName)
+        {
+            using StreamWriter sw = new StreamWriter(@"data/" + fileName + ".json", false);
+            sw.Write(JsonSerializer.Serialize(docks));
+        }
+
+        private Dock[] GetDocksFromJsonFile(string fileName)
+        {
+            using StreamReader sr = File.OpenText(@"data/" + fileName + ".json");
+            return JsonSerializer.Deserialize<Dock[]>(sr.ReadToEnd());
         }
 
     }

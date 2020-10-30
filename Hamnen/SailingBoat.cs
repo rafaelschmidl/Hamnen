@@ -8,7 +8,7 @@ namespace HarborSimuation
     {
         public SailingBoat()
         {
-            ID = Utils.GenerateID("SB");
+            Id = Utils.GenerateID("SB");
             Size = 2;
         }
     }
