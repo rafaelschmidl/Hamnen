@@ -35,8 +35,6 @@ namespace HarborSimuation
             backgroundWorker.WorkerSupportsCancellation = true;
             backgroundWorker.WorkerReportsProgress = true;
 
-            PaintOrEraseBoats();
-
             if (File.Exists(@"data/boat_info.json"))
                 Boat_Info.Text = GetBoatInfoFromJsonFile(@"data/boat_info.json");
 
@@ -58,8 +56,6 @@ namespace HarborSimuation
 
         private void ClearButton_Click(object sender, RoutedEventArgs e)
         {
-            harbor.ClearDocks();
-            PaintOrEraseBoats();
             Boat_Info.Text = "";
             SetBoatInfoToJsonFile(Boat_Info.Text, @"data/boat_info.json");
 
@@ -77,7 +73,7 @@ namespace HarborSimuation
                 if (backgroundWorker.CancellationPending)
                     break;
                 backgroundWorker.ReportProgress(0);
-                System.Threading.Thread.Sleep(1000);
+                System.Threading.Thread.Sleep(500);
             }
         }
 
@@ -85,74 +81,76 @@ namespace HarborSimuation
         {
             harbor.NextDay(5);
 
-            Boat_Info.Text = "";
-            Boat_Info.Text += "new day \n";
-            harbor.DocksLeft.Where(d => d.IsOccupied()).ToList()
-                .ForEach(d => Boat_Info.Text += d.IdNumber + " " + d.OccupiedBy.Id + " " + d.OccupiedBy.DaysBeforeDeparture.ToString() + "\n");
-            harbor.DocksRight.Where(d => d.IsOccupied()).ToList()
-                .ForEach(d => Boat_Info.Text += d.IdNumber + " " + d.OccupiedBy.Id + " " + d.OccupiedBy.DaysBeforeDeparture.ToString() + "\n");
+            ClearBoats();
+            ShowBoats();
 
-            PaintOrEraseBoats();
+
+            Boat_Info.Text = "";
+
+            harbor.DockedBoats.ForEach(b => Boat_Info.Text += b.Id + " " + b.DaysBeforeDeparture + "\n");
+
+            Boat_Info.Text += harbor.DockedBoats.Count;
+
 
             SetBoatInfoToJsonFile(Boat_Info.Text, @"data/boat_info.json");
         }
 
-        private void PaintOrEraseBoats()
+        private void ShowBoats()
         {
-            foreach (Dock d in harbor.DocksLeft)
+            harbor.DockedBoats.ForEach(boat => {
+                boat.DockedTo.ForEach(dockNumber => {
+                    FillDockRect(Harbor, dockNumber, boat);
+                });
+            });
+        }
+
+        private void ClearBoats()
+        {
+            foreach (var rect in Docks_left.Children)
             {
-                PaintOrEraseBoat(Docks_left, d);
+                Rectangle r = rect as Rectangle;
+                r.Fill = null;
             }
-            foreach (Dock d in harbor.DocksRight)
+            foreach (var rect in Docks_right.Children)
             {
-                PaintOrEraseBoat(Docks_right, d);
+                Rectangle r = rect as Rectangle;
+                r.Fill = null;
+            }
+
+        }
+
+        private void FillDockRect(StackPanel stackPanel, int dockNumber, Boat boat)
+        {
+            Brush brush = BoatColorBrush(boat);
+
+            Rectangle r1 = stackPanel.FindName("Dock_" + dockNumber * 2) as Rectangle;
+            r1.Fill = brush;
+
+            if (boat is RowingBoat == false)
+            {
+                Rectangle r2 = stackPanel.FindName("Dock_" + (dockNumber * 2 - 1)) as Rectangle;
+                r2.Fill = brush;
             }
         }
 
-        private void PaintOrEraseBoat(StackPanel stackPanelDocks, Dock d)
+
+
+        private Brush BoatColorBrush(Boat boat)
         {
-            Brush brush;
-            if (!d.IsOccupied())
+            switch (boat.Id.Substring(0, 2))
             {
-                brush = null;
-            }
-            else
-            {
-                switch (d.OccupiedBy.Id.Substring(0, 2))
-                {
-                    case "RB":
-                        brush = Brushes.Yellow;
-                        break;
-                    case "MB":
-                        brush = Brushes.DarkSeaGreen;
-                        break;
-                    case "SB":
-                        brush = Brushes.Azure;
-                        break;
-                    case "CM":
-                        brush = Brushes.Goldenrod;
-                        break;
-                    case "CS":
-                        brush = Brushes.Black;
-                        break;
-                    default:
-                        brush = Brushes.Green;
-                        break;
-                }
-            }
-
-            Rectangle r1 = stackPanelDocks.FindName("Dock_" + d.IdNumber * 2) as Rectangle;
-            r1.Fill = brush;
-
-            if (!d.HasPlaceForSecondRowingBoat())
-            {
-                Rectangle r2 = stackPanelDocks.FindName("Dock_" + (d.IdNumber * 2 - 1)) as Rectangle;
-                r2.Fill = brush;
-            }
-            else
-            {
-                Rectangle r2 = stackPanelDocks.FindName("Dock_" + (d.IdNumber * 2 - 1)) as Rectangle;
-                r2.Fill = null;
+                case "RB":
+                    return Brushes.Yellow;
+                case "MB":
+                    return Brushes.DarkSeaGreen;
+                case "SB":
+                    return Brushes.Azure;
+                case "CM":
+                    return Brushes.Goldenrod;
+                case "CS":
+                    return Brushes.Black;
+                default:
+                    return Brushes.Green;
             }
         }
 

@@ -12,10 +12,12 @@ namespace HarborSimuation
         {
             Id = Utils.GenerateID("RB");
             Size = 1;
+            DockedTo = new List<int>(Size);
+            DaysBeforeDeparture = 1;
             Weight = Utils.RandomNumberInRange(100, 300);
             MaxSpeedKnots = Utils.RandomNumberInRange(0, 3);
             MaxPassangers = Utils.RandomNumberInRange(1, 6);
-            DaysBeforeDeparture = 1;
+            
         }
 
     }

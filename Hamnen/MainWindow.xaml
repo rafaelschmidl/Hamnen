@@ -16,7 +16,7 @@
                 <GradientStop Color="#FF6D68CB" Offset="1"/>
             </LinearGradientBrush>
         </Grid.Background>
-        <StackPanel Orientation="Horizontal" Margin="138,0,0,1" VerticalAlignment="Bottom" HorizontalAlignment="Left">
+        <StackPanel x:Name="Harbor" Orientation="Horizontal" Margin="138,0,0,1" VerticalAlignment="Bottom" HorizontalAlignment="Left">
             <StackPanel x:Name="Docks_left" Width="16" Height="512" VerticalAlignment="Top">
                 <Rectangle x:Name="Dock_1" Height="8" Stroke="#00F5F5F5" Width="16"/>
                 <Rectangle x:Name="Dock_2" Height="8" Stroke="#00F5F5F5" Width="16"/>
@@ -151,15 +151,15 @@
                 <Rectangle x:Name="Dock_128" Height="8" Stroke="#00F5F5F5" Width="16"/>
             </StackPanel>
         </StackPanel>
-        <StackPanel Margin="443,42,71,0">
+        <StackPanel Margin="443,42,71,83">
+            <StackPanel Height="33"/>
             <ScrollViewer Height="420" Width="372">
                 <TextBlock x:Name="Boat_Info" TextWrapping="Wrap" Background="#FF151E78" Foreground="White" FontFamily="Consolas" FontSize="14" Width="Auto"/>
             </ScrollViewer>
-            <StackPanel Height="33"/>
-            <StackPanel Height="42" Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button x:Name="Start_stop_button" Content="Start" Width="186" Click="StartStopButton_Click"/>
-                <Button x:Name="Reset_button" Content="Clear" Width="186" Click="ClearButton_Click"/>
-            </StackPanel>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="325,506,0,22">
+            <Button x:Name="Start_stop_button" Content="Start" Width="186" Click="StartStopButton_Click"/>
+            <Button x:Name="Reset_button" Content="Clear" Width="186" Click="ClearButton_Click"/>
         </StackPanel>
     </Grid>
 </Window>

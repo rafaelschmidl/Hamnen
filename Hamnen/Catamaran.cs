@@ -12,10 +12,11 @@ namespace HarborSimuation
         {
             Id = Utils.GenerateID("CM");
             Size = 3;
+            DockedTo = new List<int>(Size);
+            DaysBeforeDeparture = 3;
             Weight = Utils.RandomNumberInRange(1200, 8000);
             MaxSpeedKnots = Utils.RandomNumberInRange(0, 12);
             Beds = Utils.RandomNumberInRange(1, 4);
-            DaysBeforeDeparture = 3;
         }
     }
 }
