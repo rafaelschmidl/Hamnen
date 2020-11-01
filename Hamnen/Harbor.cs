@@ -13,14 +13,54 @@ namespace HarborSimuation
     public class Harbor
     {
         public List<Boat> DockedBoats { get; set; }
-        public List<Dock> DocksLeft { get; }
-        public List<Dock> DocksRight { get; }
+        public List<Dock> DocksLeft { get; set; }
+        public List<Dock> DocksRight { get; set; }
 
 
         public Harbor()
         {
+            
+
+
+            if (!File.Exists("data/docks_left.json") || !File.Exists("data/docks_right.json") || !File.Exists("data/docked_boats.json"))
+            {
+                DockedBoats = new List<Boat>();
+                ConstructDocks();
+                SetDocksToJsonFile(DocksLeft, "data/docks_left.json");
+                SetDocksToJsonFile(DocksRight, "data/docks_right.json");
+                SetDockedBoatsToJsonFile(DockedBoats, "data/docked_boats.json");
+            }
+            else
+            {
+                DocksLeft = GetDocksFromJsonFile("data/docks_left.json");
+                DocksRight = GetDocksFromJsonFile("data/docks_right.json");
+                DockedBoats = GetDockedBoatsFromJsonFile("data/docked_boats.json");
+            }
+        }
+
+        public void Clear()
+        {
+            ConstructDocks();
             DockedBoats = new List<Boat>();
 
+            SetDocksToJsonFile(DocksLeft, "data/docks_left.json");
+            SetDocksToJsonFile(DocksRight, "data/docks_right.json");
+            SetDockedBoatsToJsonFile(DockedBoats, "data/docked_boats.json");
+        }
+
+        public void NextDay(int numberOfIncomingBoats)
+        {
+            DecrementDaysBeforeDeparture();
+            DepartBoats();
+            DockIncomingBoats(GenerateIncomingBoats(numberOfIncomingBoats));
+
+            SetDocksToJsonFile(DocksLeft, "data/docks_left.json");
+            SetDocksToJsonFile(DocksRight, "data/docks_right.json");
+            SetDockedBoatsToJsonFile(DockedBoats, "data/docked_boats.json");
+        }
+
+        private void ConstructDocks()
+        {
             DocksLeft = new List<Dock>(32);
             DocksRight = new List<Dock>(32);
 
@@ -29,17 +69,6 @@ namespace HarborSimuation
                 DocksLeft.Add(new Dock(i + 1));
                 DocksRight.Add(new Dock(i + 32 + 1));
             }
-
-
-
-        }
-
-        public void NextDay(int numberOfIncomingBoats)
-        {
-
-            DecrementDaysBeforeDeparture();
-            DepartBoats();
-            DockIncomingBoats(GenerateIncomingBoats(numberOfIncomingBoats));
         }
 
         private void DecrementDaysBeforeDeparture()
@@ -79,6 +108,14 @@ namespace HarborSimuation
 
             for (int i = 0; i < primaryDocks.Count; i++)
             {
+                //if (boat is RowingBoat && primaryDocks[i].HasPlaceForAnotherRowingBoat)
+                //{
+                //    if (primaryDocks[i].IsOccupied)
+                //        primaryDocks[i].HasPlaceForAnotherRowingBoat = false;
+                //    else
+                //        primaryDocks[i].IsOccupied = true;
+                //}
+
                 if (!primaryDocks[i].IsOccupied && i + boat.Size < primaryDocks.Count)
                 {
                     canDock = true;
@@ -159,7 +196,29 @@ namespace HarborSimuation
             return incomingBoats;
         }
 
+        private void SetDocksToJsonFile(List<Dock> docks, string filePath)
+        {
+            using StreamWriter sw = new StreamWriter(filePath, false);
+            sw.Write(JsonSerializer.Serialize(docks));
+        }
 
+        private List<Dock> GetDocksFromJsonFile(string filePath)
+        {
+            using StreamReader sr = File.OpenText(filePath);
+            return JsonSerializer.Deserialize<List<Dock>>(sr.ReadToEnd());
+        }
+
+        private void SetDockedBoatsToJsonFile(List<Boat> boats, string filePath)
+        {
+            using StreamWriter sw = new StreamWriter(filePath, false);
+            sw.Write(JsonSerializer.Serialize(boats));
+        }
+
+        private List<Boat> GetDockedBoatsFromJsonFile(string filePath)
+        {
+            using StreamReader sr = File.OpenText(filePath);
+            return JsonSerializer.Deserialize<List<Boat>>(sr.ReadToEnd());
+        }
 
 
 

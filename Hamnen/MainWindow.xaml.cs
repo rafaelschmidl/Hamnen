@@ -15,6 +15,8 @@ using System.Windows.Shapes;
 using System.ComponentModel;
 using System.IO;
 using System.Text.Json;
+using Harbor;
+using Dock = Harbor.Dock;
 
 namespace HarborSimuation
 {
@@ -35,8 +37,10 @@ namespace HarborSimuation
             backgroundWorker.WorkerSupportsCancellation = true;
             backgroundWorker.WorkerReportsProgress = true;
 
+            ShowBoats();
+
             if (File.Exists(@"data/boat_info.json"))
-                Boat_Info.Text = GetBoatInfoFromJsonFile(@"data/boat_info.json");
+                Boat_Info.Text = GetBoatInfoFromJsonFile("data/boat_info.json");
 
         }
 
@@ -56,8 +60,12 @@ namespace HarborSimuation
 
         private void ClearButton_Click(object sender, RoutedEventArgs e)
         {
+            harbor.Clear();
+
+            ClearBoats();
+
             Boat_Info.Text = "";
-            SetBoatInfoToJsonFile(Boat_Info.Text, @"data/boat_info.json");
+            SetBoatInfoToJsonFile(Boat_Info.Text, "data/boat_info.json");
 
             if (backgroundWorker.IsBusy)
             {
@@ -73,13 +81,13 @@ namespace HarborSimuation
                 if (backgroundWorker.CancellationPending)
                     break;
                 backgroundWorker.ReportProgress(0);
-                System.Threading.Thread.Sleep(500);
+                System.Threading.Thread.Sleep(1000);
             }
         }
 
         private void BackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            harbor.NextDay(5);
+            harbor.NextDay(2);
 
             ClearBoats();
             ShowBoats();
@@ -126,14 +134,18 @@ namespace HarborSimuation
             Rectangle r1 = stackPanel.FindName("Dock_" + dockNumber * 2) as Rectangle;
             r1.Fill = brush;
 
-            if (boat is RowingBoat == false)
+            //Dock dock;
+            //if (dockNumber < 33)
+            //    dock = harbor.DocksLeft.Find(d => d.DockNumber == dockNumber);
+            //else
+            //    dock = harbor.DocksRight.Find(d => d.DockNumber == dockNumber);
+
+            if (boat.Id.Substring(0, 2) != "RB") //(!dock.HasPlaceForAnotherRowingBoat)
             {
                 Rectangle r2 = stackPanel.FindName("Dock_" + (dockNumber * 2 - 1)) as Rectangle;
                 r2.Fill = brush;
             }
         }
-
-
 
         private Brush BoatColorBrush(Boat boat)
         {
