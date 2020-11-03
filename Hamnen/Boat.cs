@@ -14,5 +14,6 @@ namespace HarborSimuation
         public int DaysBeforeDeparture { get; set; }
         public int Weight { get; set; }
         public int MaxSpeedKnots { get; set; }
+        public int UniqueProperty { get; set; }
     }
 }

@@ -50,6 +50,8 @@ namespace HarborSimuation
 
         public void NextDay(int numberOfIncomingBoats)
         {
+
+
             DecrementDaysBeforeDeparture();
             DepartBoats();
             DockIncomingBoats(GenerateIncomingBoats(numberOfIncomingBoats));
@@ -82,10 +84,21 @@ namespace HarborSimuation
 
             departingBoats.ForEach(boat => {
                 boat.DockedTo.ForEach(dockNumber => {
+
+                    Dock dock;
+
                     if (dockNumber <= DocksLeft.Count)
-                        DocksLeft[dockNumber - 1].IsOccupied = false;
+                        dock = DocksLeft[dockNumber - 1];
                     else
-                        DocksRight[dockNumber - DocksLeft.Count - 1].IsOccupied = false;
+                        dock = DocksRight[dockNumber - DocksLeft.Count - 1];
+
+                    if (boat.Id.Substring(0, 2) == "RB" && !dock.HasPlaceForAnotherRowingBoat)
+                        dock.HasPlaceForAnotherRowingBoat = true;
+                    else
+                    {
+                        dock.HasPlaceForAnotherRowingBoat = true;
+                        dock.IsOccupied = false;
+                    }
                 });
             });
             DockedBoats.RemoveAll(b => b.DaysBeforeDeparture < 0);
@@ -108,14 +121,6 @@ namespace HarborSimuation
 
             for (int i = 0; i < primaryDocks.Count; i++)
             {
-                //if (boat is RowingBoat && primaryDocks[i].HasPlaceForAnotherRowingBoat)
-                //{
-                //    if (primaryDocks[i].IsOccupied)
-                //        primaryDocks[i].HasPlaceForAnotherRowingBoat = false;
-                //    else
-                //        primaryDocks[i].IsOccupied = true;
-                //}
-
                 if (!primaryDocks[i].IsOccupied && i + boat.Size < primaryDocks.Count)
                 {
                     canDock = true;
@@ -129,11 +134,21 @@ namespace HarborSimuation
                         for (int k = 0; k < boat.Size; k++)
                         {
                             primaryDocks[i + k].IsOccupied = true;
+                            if (boat is RowingBoat == false)
+                                primaryDocks[i + k].HasPlaceForAnotherRowingBoat = false;
                             boat.DockedTo.Add(primaryDocks[i + k].DockNumber);
                         }
                         DockedBoats.Add(boat);
                         break;
                     }
+                }
+                else if (boat is RowingBoat && primaryDocks[i].HasPlaceForAnotherRowingBoat)
+                {
+                    canDock = true;
+                    primaryDocks[i].HasPlaceForAnotherRowingBoat = false;
+                    boat.DockedTo.Add(primaryDocks[i].DockNumber);
+                    DockedBoats.Add(boat);
+                    break;
                 }
             }
 
@@ -141,7 +156,7 @@ namespace HarborSimuation
             {
                 for (int i = secondaryDocks.Count - 1; i >= 0; i--)
                 {
-                    if (!secondaryDocks[i].IsOccupied && i - boat.Size - 1 >= 0)
+                    if (!secondaryDocks[i].IsOccupied && i - boat.Size >= 0)
                     {
                         canDock = true;
 
@@ -154,11 +169,20 @@ namespace HarborSimuation
                             for (int k = boat.Size - 1; k >= 0; k--)
                             {
                                 secondaryDocks[i - k].IsOccupied = true;
+                                if (boat is RowingBoat == false)
+                                    secondaryDocks[i - k].HasPlaceForAnotherRowingBoat = false;
                                 boat.DockedTo.Add(secondaryDocks[i - k].DockNumber);
                                 DockedBoats.Add(boat);
                             }
                             break;
                         }
+                    }
+                    else if (boat is RowingBoat && secondaryDocks[i].HasPlaceForAnotherRowingBoat)
+                    {
+                        secondaryDocks[i].HasPlaceForAnotherRowingBoat = false;
+                        boat.DockedTo.Add(secondaryDocks[i].DockNumber);
+                        DockedBoats.Add(boat);
+                        break;
                     }
                 }
             }
@@ -210,6 +234,7 @@ namespace HarborSimuation
 
         private void SetDockedBoatsToJsonFile(List<Boat> boats, string filePath)
         {
+
             using StreamWriter sw = new StreamWriter(filePath, false);
             sw.Write(JsonSerializer.Serialize(boats));
         }
@@ -219,8 +244,5 @@ namespace HarborSimuation
             using StreamReader sr = File.OpenText(filePath);
             return JsonSerializer.Deserialize<List<Boat>>(sr.ReadToEnd());
         }
-
-
-
     }
 }

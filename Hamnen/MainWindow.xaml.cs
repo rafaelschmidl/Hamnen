@@ -87,7 +87,7 @@ namespace HarborSimuation
 
         private void BackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            harbor.NextDay(2);
+            harbor.NextDay(5);
 
             ClearBoats();
             ShowBoats();
@@ -134,13 +134,13 @@ namespace HarborSimuation
             Rectangle r1 = stackPanel.FindName("Dock_" + dockNumber * 2) as Rectangle;
             r1.Fill = brush;
 
-            //Dock dock;
-            //if (dockNumber < 33)
-            //    dock = harbor.DocksLeft.Find(d => d.DockNumber == dockNumber);
-            //else
-            //    dock = harbor.DocksRight.Find(d => d.DockNumber == dockNumber);
+            Dock dock;
+            if (dockNumber < 33)
+                dock = harbor.DocksLeft.Find(d => d.DockNumber == dockNumber);
+            else
+                dock = harbor.DocksRight.Find(d => d.DockNumber == dockNumber);
 
-            if (boat.Id.Substring(0, 2) != "RB") //(!dock.HasPlaceForAnotherRowingBoat)
+            if (!dock.HasPlaceForAnotherRowingBoat)//(boat.Id.Substring(0, 2) != "RB")
             {
                 Rectangle r2 = stackPanel.FindName("Dock_" + (dockNumber * 2 - 1)) as Rectangle;
                 r2.Fill = brush;

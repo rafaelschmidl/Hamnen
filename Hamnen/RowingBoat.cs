@@ -6,7 +6,7 @@ namespace HarborSimuation
 {
     public class RowingBoat : Boat
     {
-        public int MaxPassangers { get; }
+        public int MaxPassangers { get; set; }
 
         public RowingBoat()
         {
@@ -16,9 +16,7 @@ namespace HarborSimuation
             DaysBeforeDeparture = 1;
             Weight = Utils.RandomNumberInRange(100, 300);
             MaxSpeedKnots = Utils.RandomNumberInRange(0, 3);
-            MaxPassangers = Utils.RandomNumberInRange(1, 6);
-            
+            UniqueProperty = Utils.RandomNumberInRange(1, 6);
         }
-
     }
 }

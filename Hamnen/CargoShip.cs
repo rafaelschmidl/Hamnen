@@ -16,7 +16,7 @@ namespace HarborSimuation
             DaysBeforeDeparture = 6;
             Weight = Utils.RandomNumberInRange(3000, 20000);
             MaxSpeedKnots = Utils.RandomNumberInRange(0, 20);
-            ContainersOnboard = Utils.RandomNumberInRange(0, 500);
+            UniqueProperty = Utils.RandomNumberInRange(0, 500);
 
         }
     }
