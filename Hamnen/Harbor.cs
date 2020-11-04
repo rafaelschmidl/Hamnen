@@ -16,11 +16,12 @@ namespace HarborSimuation
         public List<Dock> DocksLeft { get; set; }
         public List<Dock> DocksRight { get; set; }
         public int RejectedBoats { get; set; }
-
+        public int Day { get; set; }
 
         public Harbor()
         {
             RejectedBoats = 0;
+            Day = 0;
 
             if (!File.Exists("data/docks_left.json") || !File.Exists("data/docks_right.json") || !File.Exists("data/docked_boats.json"))
             {
@@ -36,17 +37,13 @@ namespace HarborSimuation
                 DocksRight = GetDocksFromJsonFile("data/docks_right.json");
                 DockedBoats = GetDockedBoatsFromJsonFile("data/docked_boats.json");
             }
-        }
 
-        public void Clear()
-        {
-            ConstructDocks();
-            DockedBoats = new List<Boat>();
-            RejectedBoats = 0;
-
-            SetDocksToJsonFile(DocksLeft, "data/docks_left.json");
-            SetDocksToJsonFile(DocksRight, "data/docks_right.json");
-            SetDockedBoatsToJsonFile(DockedBoats, "data/docked_boats.json");
+            if (File.Exists("data/harbor_info.json"))
+            {
+                List<int> harborInfo = GetHarborInfoFromJsonFile("data/harbor_info.json");
+                RejectedBoats = harborInfo[0];
+                Day = harborInfo[1];
+            }
         }
 
         public void NextDay(int numberOfIncomingBoats)
@@ -54,14 +51,25 @@ namespace HarborSimuation
             DecrementDaysBeforeDeparture();
             DepartBoats();
             DockIncomingBoats(GenerateIncomingBoats(numberOfIncomingBoats));
+            Day++;
 
             SetDocksToJsonFile(DocksLeft, "data/docks_left.json");
             SetDocksToJsonFile(DocksRight, "data/docks_right.json");
             SetDockedBoatsToJsonFile(DockedBoats, "data/docked_boats.json");
+            SetHarborInfoToJsonFile(PackHarborInfo(RejectedBoats, Day), "data/harbor_info.json");
+        }
 
-            Debug.Write("DockedBoats: " + DockedBoats.Count + "\n");
+        public void Clear()
+        {
+            ConstructDocks();
+            DockedBoats = new List<Boat>();
+            RejectedBoats = 0;
+            Day = 0;
 
-            Debug.Write("DockedBoats: " + DockedBoats.Count + "\n");
+            SetDocksToJsonFile(DocksLeft, "data/docks_left.json");
+            SetDocksToJsonFile(DocksRight, "data/docks_right.json");
+            SetDockedBoatsToJsonFile(DockedBoats, "data/docked_boats.json");
+            SetHarborInfoToJsonFile(PackHarborInfo(RejectedBoats, Day), "data/harbor_info.json");
 
         }
 
@@ -75,6 +83,14 @@ namespace HarborSimuation
                 DocksLeft.Add(new Dock(i + 1));
                 DocksRight.Add(new Dock(i + 32 + 1));
             }
+        }
+
+        private List<int> PackHarborInfo(int rejectedBoats, int day)
+        {
+            List<int> harborInfo = new List<int>(2);
+            harborInfo.Add(rejectedBoats);
+            harborInfo.Add(day);
+            return harborInfo;
         }
 
         private void DecrementDaysBeforeDeparture()
@@ -250,6 +266,19 @@ namespace HarborSimuation
         {
             using StreamReader sr = File.OpenText(filePath);
             return JsonSerializer.Deserialize<List<Boat>>(sr.ReadToEnd());
+        }
+
+        private void SetHarborInfoToJsonFile(List<int> harborInfo, string filePath)
+        {
+
+            using StreamWriter sw = new StreamWriter(filePath, false);
+            sw.Write(JsonSerializer.Serialize(harborInfo));
+        }
+
+        private List<int> GetHarborInfoFromJsonFile(string filePath)
+        {
+            using StreamReader sr = File.OpenText(filePath);
+            return JsonSerializer.Deserialize<List<int>>(sr.ReadToEnd());
         }
     }
 }

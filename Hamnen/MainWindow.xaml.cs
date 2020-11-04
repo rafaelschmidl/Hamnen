@@ -28,6 +28,9 @@ namespace HarborSimuation
         private Harbor harbor = new Harbor();
         private BackgroundWorker backgroundWorker = new BackgroundWorker();
 
+        private int boatsPerDay = 5;
+        private int dayIteartionSpeed = 2222;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -36,6 +39,9 @@ namespace HarborSimuation
             backgroundWorker.ProgressChanged += BackgroundWorker_ProgressChanged;
             backgroundWorker.WorkerSupportsCancellation = true;
             backgroundWorker.WorkerReportsProgress = true;
+
+            Boats_per_day_slider_value.Content = boatsPerDay.ToString();
+            Day_iteration_speed_slider_value.Content = dayIteartionSpeed.ToString();
 
             if (File.Exists("data/boat_info.json"))
                 Boat_Info.Text = GetStringFromJsonFile("data/boat_info.json");
@@ -78,6 +84,20 @@ namespace HarborSimuation
             }
         }
 
+        private void BoatsPerDaySlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            Slider slider = (Slider)sender;
+            Boats_per_day_slider_value.Content = Math.Round(slider.Value).ToString();
+            boatsPerDay = (int)slider.Value;
+        }
+
+        private void DayIterationSpeedSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            Slider slider = (Slider)sender;
+            Day_iteration_speed_slider_value.Content = slider.Value;
+            dayIteartionSpeed = (int)slider.Value;
+        }
+
         private void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             while (true)
@@ -85,13 +105,13 @@ namespace HarborSimuation
                 if (backgroundWorker.CancellationPending)
                     break;
                 backgroundWorker.ReportProgress(0);
-                System.Threading.Thread.Sleep(1000);
+                System.Threading.Thread.Sleep(dayIteartionSpeed);
             }
         }
 
         private void BackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            harbor.NextDay(5);
+            harbor.NextDay(boatsPerDay);
             ClearBoats();
             UpdateBoatInfo();
             UpdateSummaryInfo();
@@ -118,12 +138,12 @@ namespace HarborSimuation
 
             int rejectedBoats = harbor.RejectedBoats;
 
-            Summary_Info.Text += "\n" +
+            Summary_Info.Text +=
                 " Rowing Boats:\t\t" + rowingBoats + "\t\t" + "Weight Sum:\t\t" + sumWeight + " kg\n" +
                 " Motor Boats:\t\t" + motorBoats + "\t\t" + "Average Speed:\t\t" + Math.Round(Utils.KnotsToKmph(averageSpeed), 2) + " km/h\n" +
                 " Sailing Boats:\t\t" + sailingBoats + "\t\t" + "Unoccupied Docks:\t" + unoccupiedDocks + "\n" +
                 " Catamarans:\t\t" + catamarans + "\t\t" + "Rejected Boats:\t\t" + rejectedBoats + "\n" +
-                " Cargo Ships:\t\t" + cargaoShips + "\n";
+                " Cargo Ships:\t\t" + cargaoShips + "\t\t" + "Day:\t\t\t" + harbor.Day + "\n";
 
             SetStringToJsonFile(Summary_Info.Text, "data/summary_info.json");
         }
@@ -262,11 +282,6 @@ namespace HarborSimuation
         {
             using StreamReader sr = File.OpenText(filePath);
             return JsonSerializer.Deserialize<string>(sr.ReadToEnd());
-        }
-
-        private void BoatsPerDaySlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-
         }
     }
 }

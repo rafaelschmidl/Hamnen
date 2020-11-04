@@ -13,11 +13,18 @@
         <Grid.Background>
             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                 <GradientStop Color="#FF0046FF"/>
-                <GradientStop Color="#FF6D68CB" Offset="1"/>
+                <GradientStop Color="Black" Offset="1"/>
             </LinearGradientBrush>
         </Grid.Background>
         <Grid HorizontalAlignment="Left" Margin="35,0,0,127" VerticalAlignment="Bottom">
-            <Rectangle HorizontalAlignment="Left" Height="584" Stroke="Black" VerticalAlignment="Top" Width="334" Fill="#FF001B76"/>
+            <Rectangle HorizontalAlignment="Left" Height="584" Stroke="Black" VerticalAlignment="Top" Width="334">
+                <Rectangle.Fill>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FF081948"/>
+                        <GradientStop Color="#FF0046FD" Offset="1"/>
+                    </LinearGradientBrush>
+                </Rectangle.Fill>
+            </Rectangle>
             <StackPanel x:Name="Harbor" Orientation="Horizontal" Margin="0,58,0,0" VerticalAlignment="Top" HorizontalAlignment="Center">
                 <StackPanel x:Name="Docks_left" Width="16" Height="512" VerticalAlignment="Top">
                     <Rectangle x:Name="Dock_1" Height="8" Stroke="#00F5F5F5" Width="16"/>
@@ -154,25 +161,29 @@
                 </StackPanel>
             </StackPanel>
         </Grid>
-        <StackPanel Margin="393,32,33,0" VerticalAlignment="Top" Height="597">
+        <StackPanel Margin="393,25,33,0" VerticalAlignment="Top" Height="605">
             <StackPanel Orientation="Horizontal">
-                <Label Width="58" Content="Dock" Background="White" BorderBrush="Black" FontWeight="Bold" BorderThickness="1,1,1,0" ClipToBounds="True"/>
-                <Label Width="103" Content="Boat Type" Background="White" BorderBrush="Black" FontWeight="Bold" BorderThickness="1,1,1,0" ClipToBounds="True"/>
-                <Label Width="87" Content="ID" Background="White" BorderBrush="Black" FontWeight="Bold" BorderThickness="1,1,1,0" ClipToBounds="True"/>
-                <Label Width="82" Content="Weight (kg)" Background="White" BorderBrush="Black" FontWeight="Bold" BorderThickness="1,1,1,0" ClipToBounds="True"/>
-                <Label Width="55" Content="Km/h" Background="White" BorderBrush="Black" FontWeight="Bold" BorderThickness="1,1,1,0" ClipToBounds="True"/>
-                <Label Width="191" Content="Dock" Background="White" BorderBrush="Black" FontWeight="Bold" BorderThickness="1,1,1,0" ClipToBounds="True"/>
+                <Label Width="58" Content="Dock" Background="#FFE3F0FD" BorderBrush="Black" FontWeight="Bold" BorderThickness="1,1,1,0" ClipToBounds="True" FontFamily="Consolas" FontSize="14"/>
+                <Label Width="103" Content="Boat Type" Background="#FFE3F0FD" BorderBrush="Black" FontWeight="Bold" BorderThickness="1,1,1,0" ClipToBounds="True" FontFamily="Consolas" FontSize="14"/>
+                <Label Width="87" Content="ID" Background="#FFE3F0FD" BorderBrush="Black" FontWeight="Bold" BorderThickness="1,1,1,0" ClipToBounds="True" FontFamily="Consolas" FontSize="14"/>
+                <Label Width="82" Content="Weight kg" Background="#FFE3F0FD" BorderBrush="Black" FontWeight="Bold" BorderThickness="1,1,1,0" ClipToBounds="True" FontFamily="Consolas" FontSize="14"/>
+                <Label Width="55" Content="Km/h" Background="#FFE3F0FD" BorderBrush="Black" FontWeight="Bold" BorderThickness="1,1,1,0" ClipToBounds="True" FontFamily="Consolas" FontSize="14"/>
+                <Label Width="191" Content="Dock" Background="#FFE3F0FD" BorderBrush="Black" FontWeight="Bold" BorderThickness="1,1,1,0" ClipToBounds="True" FontFamily="Consolas" FontSize="14"/>
             </StackPanel>
-            <ScrollViewer HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" VerticalContentAlignment="Top">
-                <TextBlock x:Name="Boat_Info" TextWrapping="Wrap" Background="#FF151E78" Foreground="White" FontFamily="Consolas" FontSize="14" Width="Auto" Height="408"/>
+            <ScrollViewer HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto" d:IsHidden="True" CanContentScroll="True" HorizontalScrollBarVisibility="Disabled" Height="408">
+                <TextBlock x:Name="Boat_Info" TextWrapping="Wrap" Background="#FF151E78" Foreground="White" FontFamily="Consolas" FontSize="14" Width="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
             </ScrollViewer>
-            <TextBlock x:Name="Summary_Info" TextWrapping="Wrap" Height="120" Background="#FF151E78" Foreground="White" FontSize="14"/>
+            <TextBlock x:Name="Summary_Info" TextWrapping="Wrap" Height="125" Background="#FF151E78" Foreground="White" FontSize="14" UseLayoutRounding="True" ScrollViewer.CanContentScroll="True" Margin="0,24,0,0"/>
         </StackPanel>
-        <Label Content="Boats per day" HorizontalAlignment="Left" Margin="35,664,0,0" VerticalAlignment="Top" Width="345" HorizontalContentAlignment="Center" FontSize="14" FontWeight="Normal" Foreground="White"/>
-        <Slider HorizontalAlignment="Left" Margin="35,690,0,0" VerticalAlignment="Top" Width="345" ValueChanged="BoatsPerDaySlider_ValueChanged"/>
-        <StackPanel Orientation="Horizontal" Margin="480,668,152,46">
-            <Button x:Name="Start_stop_button" Content="Start" Click="StartStopButton_Click" Width="186"/>
-            <Button x:Name="Reset_button" Content="Clear" Width="186" Click="ClearButton_Click"/>
-        </StackPanel>
+        <Grid Margin="0,618,0,0" Background="#FF100155">
+            <Button x:Name="Start_stop_button" Content="Start" Click="StartStopButton_Click" Margin="316,0,502,0" Width="186" Height="42"/>
+            <Button x:Name="Reset_button" Content="Clear" Click="ClearButton_Click" Margin="61,0,757,0" Width="186" Height="42"/>
+            <Label Content="Boats per day:" HorizontalAlignment="Left" Margin="590,11,0,0" VerticalAlignment="Top" Width="100" HorizontalContentAlignment="Left" FontSize="14" FontWeight="Normal" Foreground="White"/>
+            <Label x:Name="Boats_per_day_slider_value" Content="" HorizontalAlignment="Left" Margin="690,11,0,0" VerticalAlignment="Top" Width="50" HorizontalContentAlignment="Left" FontSize="14" FontWeight="Normal" Foreground="White"/>
+            <Slider x:Name="Boats_per_day_slider" HorizontalAlignment="Left" Margin="590,37,0,0" VerticalAlignment="Top" Width="345" ValueChanged="BoatsPerDaySlider_ValueChanged" TickPlacement="None" Maximum="20" SmallChange="1" Value="5" Minimum="1"/>
+            <Label Content="Day iteration speed:" HorizontalAlignment="Left" Margin="590,62,0,0" VerticalAlignment="Top" Width="135" HorizontalContentAlignment="Left" FontSize="14" FontWeight="Normal" Foreground="White"/>
+            <Label x:Name="Day_iteration_speed_slider_value" Content="" HorizontalAlignment="Left" Margin="725,62,0,0" VerticalAlignment="Top" Width="50" HorizontalContentAlignment="Left" FontSize="14" FontWeight="Normal" Foreground="White"/>
+            <Slider x:Name="Day_iteration_speed_slider" HorizontalAlignment="Left" Margin="590,90,0,0" VerticalAlignment="Top" Width="345" ValueChanged="DayIterationSpeedSlider_ValueChanged" TickPlacement="None" Maximum="4444" SmallChange="0" Value="2222" Minimum="111"/>
+        </Grid>
     </Grid>
 </Window>
