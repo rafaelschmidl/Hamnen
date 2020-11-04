@@ -170,7 +170,7 @@
                 <Label Width="55" Content="Km/h" Background="#FFE3F0FD" BorderBrush="Black" FontWeight="Bold" BorderThickness="1,1,1,0" ClipToBounds="True" FontFamily="Consolas" FontSize="14"/>
                 <Label Width="191" Content="Dock" Background="#FFE3F0FD" BorderBrush="Black" FontWeight="Bold" BorderThickness="1,1,1,0" ClipToBounds="True" FontFamily="Consolas" FontSize="14"/>
             </StackPanel>
-            <ScrollViewer HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto" d:IsHidden="True" CanContentScroll="True" HorizontalScrollBarVisibility="Disabled" Height="408">
+            <ScrollViewer HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto" CanContentScroll="True" HorizontalScrollBarVisibility="Disabled" Height="408">
                 <TextBlock x:Name="Boat_Info" TextWrapping="Wrap" Background="#FF151E78" Foreground="White" FontFamily="Consolas" FontSize="14" Width="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
             </ScrollViewer>
             <TextBlock x:Name="Summary_Info" TextWrapping="Wrap" Height="125" Background="#FF151E78" Foreground="White" FontSize="14" UseLayoutRounding="True" ScrollViewer.CanContentScroll="True" Margin="0,24,0,0"/>
