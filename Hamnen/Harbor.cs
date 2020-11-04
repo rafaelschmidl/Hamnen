@@ -15,12 +15,12 @@ namespace HarborSimuation
         public List<Boat> DockedBoats { get; set; }
         public List<Dock> DocksLeft { get; set; }
         public List<Dock> DocksRight { get; set; }
+        public int RejectedBoats { get; set; }
 
 
         public Harbor()
         {
-            
-
+            RejectedBoats = 0;
 
             if (!File.Exists("data/docks_left.json") || !File.Exists("data/docks_right.json") || !File.Exists("data/docked_boats.json"))
             {
@@ -42,6 +42,7 @@ namespace HarborSimuation
         {
             ConstructDocks();
             DockedBoats = new List<Boat>();
+            RejectedBoats = 0;
 
             SetDocksToJsonFile(DocksLeft, "data/docks_left.json");
             SetDocksToJsonFile(DocksRight, "data/docks_right.json");
@@ -50,8 +51,6 @@ namespace HarborSimuation
 
         public void NextDay(int numberOfIncomingBoats)
         {
-
-
             DecrementDaysBeforeDeparture();
             DepartBoats();
             DockIncomingBoats(GenerateIncomingBoats(numberOfIncomingBoats));
@@ -59,6 +58,11 @@ namespace HarborSimuation
             SetDocksToJsonFile(DocksLeft, "data/docks_left.json");
             SetDocksToJsonFile(DocksRight, "data/docks_right.json");
             SetDockedBoatsToJsonFile(DockedBoats, "data/docked_boats.json");
+
+            Debug.Write("DockedBoats: " + DockedBoats.Count + "\n");
+
+            Debug.Write("DockedBoats: " + DockedBoats.Count + "\n");
+
         }
 
         private void ConstructDocks()
@@ -80,7 +84,7 @@ namespace HarborSimuation
 
         private void DepartBoats()
         {
-            List<Boat> departingBoats = DockedBoats.Where(boat => boat.DaysBeforeDeparture < 0).ToList();
+            List<Boat> departingBoats = DockedBoats.Where(boat => boat.DaysBeforeDeparture <= 0).ToList();
 
             departingBoats.ForEach(boat => {
                 boat.DockedTo.ForEach(dockNumber => {
@@ -101,7 +105,7 @@ namespace HarborSimuation
                     }
                 });
             });
-            DockedBoats.RemoveAll(b => b.DaysBeforeDeparture < 0);
+            DockedBoats.RemoveAll(b => b.DaysBeforeDeparture <= 0);
         }
 
         private void DockIncomingBoats(List<Boat> incomingBoats)
@@ -156,11 +160,11 @@ namespace HarborSimuation
             {
                 for (int i = secondaryDocks.Count - 1; i >= 0; i--)
                 {
-                    if (!secondaryDocks[i].IsOccupied && i - boat.Size >= 0)
+                    if (!secondaryDocks[i].IsOccupied && i - boat.Size - 1 > 0)
                     {
                         canDock = true;
 
-                        for (int j = boat.Size - 1; j >= 0; j--)
+                        for (int j = boat.Size - 1; j > 0; j--)
                             if (secondaryDocks[i - j].IsOccupied)
                                 canDock = false;
 
@@ -172,19 +176,22 @@ namespace HarborSimuation
                                 if (boat is RowingBoat == false)
                                     secondaryDocks[i - k].HasPlaceForAnotherRowingBoat = false;
                                 boat.DockedTo.Add(secondaryDocks[i - k].DockNumber);
-                                DockedBoats.Add(boat);
                             }
+                            DockedBoats.Add(boat);
                             break;
                         }
                     }
                     else if (boat is RowingBoat && secondaryDocks[i].HasPlaceForAnotherRowingBoat)
                     {
+                        canDock = true;
                         secondaryDocks[i].HasPlaceForAnotherRowingBoat = false;
                         boat.DockedTo.Add(secondaryDocks[i].DockNumber);
                         DockedBoats.Add(boat);
                         break;
                     }
                 }
+
+                if (!canDock) RejectedBoats++;
             }
         }
 

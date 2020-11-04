@@ -37,11 +37,12 @@ namespace HarborSimuation
             backgroundWorker.WorkerSupportsCancellation = true;
             backgroundWorker.WorkerReportsProgress = true;
 
+            if (File.Exists("data/boat_info.json"))
+                Boat_Info.Text = GetStringFromJsonFile("data/boat_info.json");
+            if (File.Exists("data/summary_info.json"))
+                Summary_Info.Text = GetStringFromJsonFile("data/summary_info.json");
+
             ShowBoats();
-
-            if (File.Exists(@"data/boat_info.json"))
-                Boat_Info.Text = GetBoatInfoFromJsonFile("data/boat_info.json");
-
         }
 
         private void StartStopButton_Click(object sender, RoutedEventArgs e)
@@ -65,7 +66,10 @@ namespace HarborSimuation
             ClearBoats();
 
             Boat_Info.Text = "";
-            SetBoatInfoToJsonFile(Boat_Info.Text, "data/boat_info.json");
+            SetStringToJsonFile(Boat_Info.Text, "data/boat_info.json");
+
+            Summary_Info.Text = "";
+            SetStringToJsonFile(Summary_Info.Text, "data/summary_info.json");
 
             if (backgroundWorker.IsBusy)
             {
@@ -88,19 +92,101 @@ namespace HarborSimuation
         private void BackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             harbor.NextDay(5);
-
             ClearBoats();
+            UpdateBoatInfo();
+            UpdateSummaryInfo();
             ShowBoats();
+        }
 
+        private void UpdateSummaryInfo()
+        {
+            Summary_Info.Text = "";
 
+            int rowingBoats = harbor.DockedBoats.Where(b => b.Id.Substring(0, 2) == "RB").ToList().Count();
+            int motorBoats = harbor.DockedBoats.Where(b => b.Id.Substring(0, 2) == "MB").ToList().Count();
+            int sailingBoats = harbor.DockedBoats.Where(b => b.Id.Substring(0, 2) == "SB").ToList().Count();
+            int catamarans = harbor.DockedBoats.Where(b => b.Id.Substring(0, 2) == "CM").ToList().Count();
+            int cargaoShips = harbor.DockedBoats.Where(b => b.Id.Substring(0, 2) == "CS").ToList().Count();
+
+            int sumWeight = harbor.DockedBoats.Sum(b => b.Weight);
+
+            double averageSpeed = harbor.DockedBoats.Average(b => b.MaxSpeedKnots);
+
+            int unoccupiedDocks = 0;
+            unoccupiedDocks += harbor.DocksLeft.Where(d => !d.IsOccupied).ToList().Count();
+            unoccupiedDocks += harbor.DocksRight.Where(d => !d.IsOccupied).ToList().Count();
+
+            int rejectedBoats = harbor.RejectedBoats;
+
+            Summary_Info.Text += "\n" +
+                " Rowing Boats:\t\t" + rowingBoats + "\t\t" + "Weight Sum:\t\t" + sumWeight + " kg\n" +
+                " Motor Boats:\t\t" + motorBoats + "\t\t" + "Average Speed:\t\t" + Math.Round(Utils.KnotsToKmph(averageSpeed), 2) + " km/h\n" +
+                " Sailing Boats:\t\t" + sailingBoats + "\t\t" + "Unoccupied Docks:\t" + unoccupiedDocks + "\n" +
+                " Catamarans:\t\t" + catamarans + "\t\t" + "Rejected Boats:\t\t" + rejectedBoats + "\n" +
+                " Cargo Ships:\t\t" + cargaoShips + "\n";
+
+            SetStringToJsonFile(Summary_Info.Text, "data/summary_info.json");
+        }
+
+        private void UpdateBoatInfo()
+        {
             Boat_Info.Text = "";
 
-            harbor.DockedBoats.ForEach(b => Boat_Info.Text += b.Id + " " + b.DaysBeforeDeparture + "\n");
+            harbor.DockedBoats.ForEach(b => b.DockedTo.Sort());
 
-            Boat_Info.Text += harbor.DockedBoats.Count;
+            harbor.DockedBoats.OrderBy(b => b.DockedTo.First()).ToList().ForEach(b => {
+                int dockNumberMin = b.DockedTo.Min();
+                int dockNumberMax = b.DockedTo.Max();
 
+                Boat_Info.Text += " " +
+                    dockNumberMin + "-" +
+                    dockNumberMax + "\t " +
+                    BoatTypeName(b) + "\t" +
+                    b.Id + "\t    " +
+                    b.Weight + "  \t" +
+                    Math.Round(Utils.KnotsToKmph(b.MaxSpeedKnots), 2) + "\t" +
+                    UniqueBoatPropertyDescription(b) + " " + b.UniqueProperty + "\n";
+            });
 
-            SetBoatInfoToJsonFile(Boat_Info.Text, @"data/boat_info.json");
+            SetStringToJsonFile(Boat_Info.Text, "data/boat_info.json");
+        }
+
+        private string UniqueBoatPropertyDescription(Boat boat)
+        {
+            switch (boat.Id.Substring(0, 2))
+            {
+                case "RB":
+                    return "Max Passengers:";
+                case "MB":
+                    return "Horsepowers:";
+                case "SB":
+                    return "Length:";
+                case "CM":
+                    return "Bedds:";
+                case "CS":
+                    return "Containers:";
+                default:
+                    return "";
+            }
+        }
+
+        private string BoatTypeName(Boat boat)
+        {
+            switch (boat.Id.Substring(0, 2))
+            {
+                case "RB":
+                    return "Rowing Boat";
+                case "MB":
+                    return "Motot Boat";
+                case "SB":
+                    return "Sailing Boat";
+                case "CM":
+                    return "Catamaran";
+                case "CS":
+                    return "Cargo Ship";
+                default:
+                    return "";
+            }
         }
 
         private void ShowBoats()
@@ -166,16 +252,21 @@ namespace HarborSimuation
             }
         }
 
-        private void SetBoatInfoToJsonFile(string boatInfo, string filePath)
+        private void SetStringToJsonFile(string text, string filePath)
         {
             using StreamWriter sw = new StreamWriter(filePath, false);
-            sw.Write(JsonSerializer.Serialize(boatInfo));
+            sw.Write(JsonSerializer.Serialize(text));
         }
 
-        private string GetBoatInfoFromJsonFile(string filePath)
+        private string GetStringFromJsonFile(string filePath)
         {
             using StreamReader sr = File.OpenText(filePath);
             return JsonSerializer.Deserialize<string>(sr.ReadToEnd());
+        }
+
+        private void BoatsPerDaySlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+
         }
     }
 }

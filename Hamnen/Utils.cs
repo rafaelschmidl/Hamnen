@@ -25,5 +25,10 @@ namespace HarborSimuation
         {
             return idPrefix + "-" + RandomUppercaseString(3);
         }
+
+        public static double KnotsToKmph(double knots)
+        {
+            return knots * 1.852;
+        }
     }
 }
