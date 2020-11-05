@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace HarborSimuation
 {
     public class CargoShip : Boat
     {
-        public int ContainersOnboard { get; set; }
-
         public CargoShip()
         {
             Id = Utils.GenerateID("CS");
@@ -17,7 +13,6 @@ namespace HarborSimuation
             Weight = Utils.RandomNumberInRange(3000, 20000);
             MaxSpeedKnots = Utils.RandomNumberInRange(0, 20);
             UniqueProperty = Utils.RandomNumberInRange(0, 500);
-
         }
     }
 }

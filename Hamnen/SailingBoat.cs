@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace HarborSimuation
 {
     public class SailingBoat : Boat
     {
-        public int Length { get; set; }
-
         public SailingBoat()
         {
             Id = Utils.GenerateID("SB");

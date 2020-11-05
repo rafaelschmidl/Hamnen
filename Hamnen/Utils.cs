@@ -9,6 +9,7 @@ namespace HarborSimuation
     {
         private static readonly Random random = new Random();
 
+
         public static int RandomNumberInRange(int a, int b)
         {
             return random.Next(a, b + 1);

@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace HarborSimuation
 {
     public class MotorBoat : Boat
     {
-        public int Horsepower { get; set; }
-
         public MotorBoat()
         {
             Id = Utils.GenerateID("MB");
@@ -17,8 +13,6 @@ namespace HarborSimuation
             Weight = Utils.RandomNumberInRange(200, 3000);
             MaxSpeedKnots = Utils.RandomNumberInRange(0, 60);
             UniqueProperty = Utils.RandomNumberInRange(10, 1000);
-
         }
-
     }
 }

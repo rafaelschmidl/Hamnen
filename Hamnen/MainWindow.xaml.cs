@@ -1,21 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.ComponentModel;
 using System.IO;
 using System.Text.Json;
-using Harbor;
 using Dock = Harbor.Dock;
 
 namespace HarborSimuation
@@ -51,6 +42,31 @@ namespace HarborSimuation
             ShowBoats();
         }
 
+        // Background worker methods
+
+        private void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            // Method for looping asynchronously
+            while (true)
+            {
+                if (backgroundWorker.CancellationPending)
+                    break;
+                backgroundWorker.ReportProgress(0); // Calls 'BackgroundWorker_ProgressChanged' method
+                System.Threading.Thread.Sleep(dayIteartionSpeed);
+            }
+        }
+
+        private void BackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            harbor.NextDay(boatsPerDay);
+            ClearBoats();
+            UpdateBoatInfo();
+            UpdateSummaryInfo();
+            ShowBoats();
+        }
+
+        // Control Methods
+
         private void StartStopButton_Click(object sender, RoutedEventArgs e)
         {
             if (!backgroundWorker.IsBusy)
@@ -68,7 +84,6 @@ namespace HarborSimuation
         private void ClearButton_Click(object sender, RoutedEventArgs e)
         {
             harbor.Clear();
-
             ClearBoats();
 
             Boat_Info.Text = "";
@@ -98,24 +113,29 @@ namespace HarborSimuation
             dayIteartionSpeed = (int)slider.Value;
         }
 
-        private void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            while (true)
-            {
-                if (backgroundWorker.CancellationPending)
-                    break;
-                backgroundWorker.ReportProgress(0);
-                System.Threading.Thread.Sleep(dayIteartionSpeed);
-            }
-        }
+        // Update methods
 
-        private void BackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        private void UpdateBoatInfo()
         {
-            harbor.NextDay(boatsPerDay);
-            ClearBoats();
-            UpdateBoatInfo();
-            UpdateSummaryInfo();
-            ShowBoats();
+            Boat_Info.Text = "";
+
+            harbor.DockedBoats.ForEach(b => b.DockedTo.Sort());
+
+            harbor.DockedBoats.OrderBy(b => b.DockedTo.First()).ToList().ForEach(b => {
+                int dockNumberMin = b.DockedTo.Min();
+                int dockNumberMax = b.DockedTo.Max();
+
+                Boat_Info.Text += " " +
+                    dockNumberMin + "-" +
+                    dockNumberMax + "\t " +
+                    BoatTypeName(b) + "\t" +
+                    b.Id + "\t    " +
+                    b.Weight + "  \t" +
+                    Math.Round(Utils.KnotsToKmph(b.MaxSpeedKnots), 2) + "\t" +
+                    UniqueBoatPropertyDescription(b) + " " + b.UniqueProperty + "\n";
+            });
+
+            SetStringToJsonFile(Boat_Info.Text, "data/boat_info.json");
         }
 
         private void UpdateSummaryInfo()
@@ -148,67 +168,6 @@ namespace HarborSimuation
             SetStringToJsonFile(Summary_Info.Text, "data/summary_info.json");
         }
 
-        private void UpdateBoatInfo()
-        {
-            Boat_Info.Text = "";
-
-            harbor.DockedBoats.ForEach(b => b.DockedTo.Sort());
-
-            harbor.DockedBoats.OrderBy(b => b.DockedTo.First()).ToList().ForEach(b => {
-                int dockNumberMin = b.DockedTo.Min();
-                int dockNumberMax = b.DockedTo.Max();
-
-                Boat_Info.Text += " " +
-                    dockNumberMin + "-" +
-                    dockNumberMax + "\t " +
-                    BoatTypeName(b) + "\t" +
-                    b.Id + "\t    " +
-                    b.Weight + "  \t" +
-                    Math.Round(Utils.KnotsToKmph(b.MaxSpeedKnots), 2) + "\t" +
-                    UniqueBoatPropertyDescription(b) + " " + b.UniqueProperty + "\n";
-            });
-
-            SetStringToJsonFile(Boat_Info.Text, "data/boat_info.json");
-        }
-
-        private string UniqueBoatPropertyDescription(Boat boat)
-        {
-            switch (boat.Id.Substring(0, 2))
-            {
-                case "RB":
-                    return "Max Passengers:";
-                case "MB":
-                    return "Horsepowers:";
-                case "SB":
-                    return "Length:";
-                case "CM":
-                    return "Bedds:";
-                case "CS":
-                    return "Containers:";
-                default:
-                    return "";
-            }
-        }
-
-        private string BoatTypeName(Boat boat)
-        {
-            switch (boat.Id.Substring(0, 2))
-            {
-                case "RB":
-                    return "Rowing Boat";
-                case "MB":
-                    return "Motot Boat";
-                case "SB":
-                    return "Sailing Boat";
-                case "CM":
-                    return "Catamaran";
-                case "CS":
-                    return "Cargo Ship";
-                default:
-                    return "";
-            }
-        }
-
         private void ShowBoats()
         {
             harbor.DockedBoats.ForEach(boat => {
@@ -230,8 +189,9 @@ namespace HarborSimuation
                 Rectangle r = rect as Rectangle;
                 r.Fill = null;
             }
-
         }
+
+        // Helper methods
 
         private void FillDockRect(StackPanel stackPanel, int dockNumber, Boat boat)
         {
@@ -266,11 +226,51 @@ namespace HarborSimuation
                 case "CM":
                     return Brushes.Goldenrod;
                 case "CS":
-                    return Brushes.Black;
+                    return Brushes.Red;
                 default:
                     return Brushes.Green;
             }
         }
+
+        private string BoatTypeName(Boat boat)
+        {
+            switch (boat.Id.Substring(0, 2))
+            {
+                case "RB":
+                    return "Rowing Boat";
+                case "MB":
+                    return "Motot Boat";
+                case "SB":
+                    return "Sailing Boat";
+                case "CM":
+                    return "Catamaran";
+                case "CS":
+                    return "Cargo Ship";
+                default:
+                    return "";
+            }
+        }
+
+        private string UniqueBoatPropertyDescription(Boat boat)
+        {
+            switch (boat.Id.Substring(0, 2))
+            {
+                case "RB":
+                    return "Max Passengers:";
+                case "MB":
+                    return "Horsepowers:";
+                case "SB":
+                    return "Length:";
+                case "CM":
+                    return "Bedds:";
+                case "CS":
+                    return "Containers:";
+                default:
+                    return "";
+            }
+        }
+
+        // Save methods
 
         private void SetStringToJsonFile(string text, string filePath)
         {

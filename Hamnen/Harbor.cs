@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Diagnostics;
 using Harbor;
 
 namespace HarborSimuation
@@ -46,6 +42,8 @@ namespace HarborSimuation
             }
         }
 
+        // Public update methods
+
         public void NextDay(int numberOfIncomingBoats)
         {
             DecrementDaysBeforeDeparture();
@@ -70,28 +68,9 @@ namespace HarborSimuation
             SetDocksToJsonFile(DocksRight, "data/docks_right.json");
             SetDockedBoatsToJsonFile(DockedBoats, "data/docked_boats.json");
             SetHarborInfoToJsonFile(PackHarborInfo(RejectedBoats, Day), "data/harbor_info.json");
-
         }
 
-        private void ConstructDocks()
-        {
-            DocksLeft = new List<Dock>(32);
-            DocksRight = new List<Dock>(32);
-
-            for (int i = 0; i < 32; i++)
-            {
-                DocksLeft.Add(new Dock(i + 1));
-                DocksRight.Add(new Dock(i + 32 + 1));
-            }
-        }
-
-        private List<int> PackHarborInfo(int rejectedBoats, int day)
-        {
-            List<int> harborInfo = new List<int>(2);
-            harborInfo.Add(rejectedBoats);
-            harborInfo.Add(day);
-            return harborInfo;
-        }
+        // Private update methods
 
         private void DecrementDaysBeforeDeparture()
         {
@@ -121,8 +100,31 @@ namespace HarborSimuation
                     }
                 });
             });
+
             DockedBoats.RemoveAll(b => b.DaysBeforeDeparture <= 0);
         }
+
+        /*
+         * Algorithm optimized for harboring as many boats as possible
+         * in two rows of docks:
+         * 
+         * 1 boat length unit = 1 dock
+         * 
+         * If boat length is bigger than half max boat length
+         *      Dock boat (docks A, docks B)
+         * Else
+         *      Dock boat (docks B, docks A)
+         *      
+         * - Dock boat (docks A, docks B)
+         * For every dock (starting at beginning) in docks A
+         *      If the dock and the docks ahead are unoccupied and fit the boat
+         *          Dock the boat to those docks
+         * 
+         * If the boat couldn't dock in docks A
+         *      For every dock (backwards starting at end) in docks B
+         *          If the dock and the docks behind are unoccupied and fit the boat
+         *              Dock the boat to those docks 
+         */
 
         private void DockIncomingBoats(List<Boat> incomingBoats)
         {
@@ -154,11 +156,15 @@ namespace HarborSimuation
                         for (int k = 0; k < boat.Size; k++)
                         {
                             primaryDocks[i + k].IsOccupied = true;
+
                             if (boat is RowingBoat == false)
                                 primaryDocks[i + k].HasPlaceForAnotherRowingBoat = false;
+
                             boat.DockedTo.Add(primaryDocks[i + k].DockNumber);
                         }
+
                         DockedBoats.Add(boat);
+
                         break;
                     }
                 }
@@ -168,6 +174,7 @@ namespace HarborSimuation
                     primaryDocks[i].HasPlaceForAnotherRowingBoat = false;
                     boat.DockedTo.Add(primaryDocks[i].DockNumber);
                     DockedBoats.Add(boat);
+
                     break;
                 }
             }
@@ -189,11 +196,15 @@ namespace HarborSimuation
                             for (int k = boat.Size - 1; k >= 0; k--)
                             {
                                 secondaryDocks[i - k].IsOccupied = true;
+
                                 if (boat is RowingBoat == false)
                                     secondaryDocks[i - k].HasPlaceForAnotherRowingBoat = false;
+
                                 boat.DockedTo.Add(secondaryDocks[i - k].DockNumber);
                             }
+
                             DockedBoats.Add(boat);
+
                             break;
                         }
                     }
@@ -203,11 +214,26 @@ namespace HarborSimuation
                         secondaryDocks[i].HasPlaceForAnotherRowingBoat = false;
                         boat.DockedTo.Add(secondaryDocks[i].DockNumber);
                         DockedBoats.Add(boat);
+
                         break;
                     }
                 }
 
                 if (!canDock) RejectedBoats++;
+            }
+        }
+
+        // Helper methods
+
+        private void ConstructDocks()
+        {
+            DocksLeft = new List<Dock>(32);
+            DocksRight = new List<Dock>(32);
+
+            for (int i = 0; i < 32; i++)
+            {
+                DocksLeft.Add(new Dock(i + 1));
+                DocksRight.Add(new Dock(i + 32 + 1));
             }
         }
 
@@ -243,6 +269,16 @@ namespace HarborSimuation
             return incomingBoats;
         }
 
+        private List<int> PackHarborInfo(int rejectedBoats, int day)
+        {
+            List<int> harborInfo = new List<int>(2);
+            harborInfo.Add(rejectedBoats);
+            harborInfo.Add(day);
+            return harborInfo;
+        }
+
+        // Save methods
+
         private void SetDocksToJsonFile(List<Dock> docks, string filePath)
         {
             using StreamWriter sw = new StreamWriter(filePath, false);
@@ -257,7 +293,6 @@ namespace HarborSimuation
 
         private void SetDockedBoatsToJsonFile(List<Boat> boats, string filePath)
         {
-
             using StreamWriter sw = new StreamWriter(filePath, false);
             sw.Write(JsonSerializer.Serialize(boats));
         }
@@ -270,7 +305,6 @@ namespace HarborSimuation
 
         private void SetHarborInfoToJsonFile(List<int> harborInfo, string filePath)
         {
-
             using StreamWriter sw = new StreamWriter(filePath, false);
             sw.Write(JsonSerializer.Serialize(harborInfo));
         }
