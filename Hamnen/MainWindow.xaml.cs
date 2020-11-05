@@ -34,10 +34,10 @@ namespace HarborSimuation
             Boats_per_day_slider_value.Content = boatsPerDay.ToString();
             Day_iteration_speed_slider_value.Content = dayIteartionSpeed.ToString();
 
-            if (File.Exists("data/boat_info.json"))
-                Boat_Info.Text = GetStringFromJsonFile("data/boat_info.json");
-            if (File.Exists("data/summary_info.json"))
-                Summary_Info.Text = GetStringFromJsonFile("data/summary_info.json");
+            if (File.Exists("boat_info.json"))
+                Boat_Info.Text = GetStringFromJsonFile("boat_info.json");
+            if (File.Exists("summary_info.json"))
+                Summary_Info.Text = GetStringFromJsonFile("summary_info.json");
 
             ShowBoats();
         }
@@ -87,10 +87,10 @@ namespace HarborSimuation
             ClearBoats();
 
             Boat_Info.Text = "";
-            SetStringToJsonFile(Boat_Info.Text, "data/boat_info.json");
+            SetStringToJsonFile(Boat_Info.Text, "boat_info.json");
 
             Summary_Info.Text = "";
-            SetStringToJsonFile(Summary_Info.Text, "data/summary_info.json");
+            SetStringToJsonFile(Summary_Info.Text, "summary_info.json");
 
             if (backgroundWorker.IsBusy)
             {
@@ -135,7 +135,7 @@ namespace HarborSimuation
                     UniqueBoatPropertyDescription(b) + " " + b.UniqueProperty + "\n";
             });
 
-            SetStringToJsonFile(Boat_Info.Text, "data/boat_info.json");
+            SetStringToJsonFile(Boat_Info.Text, "boat_info.json");
         }
 
         private void UpdateSummaryInfo()
@@ -165,7 +165,7 @@ namespace HarborSimuation
                 " Catamarans:\t\t" + catamarans + "\t\t" + "Rejected Boats:\t\t" + rejectedBoats + "\n" +
                 " Cargo Ships:\t\t" + cargaoShips + "\t\t" + "Day:\t\t\t" + harbor.Day + "\n";
 
-            SetStringToJsonFile(Summary_Info.Text, "data/summary_info.json");
+            SetStringToJsonFile(Summary_Info.Text, "summary_info.json");
         }
 
         private void ShowBoats()

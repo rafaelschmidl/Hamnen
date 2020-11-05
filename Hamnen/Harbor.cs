@@ -19,24 +19,24 @@ namespace HarborSimuation
             RejectedBoats = 0;
             Day = 0;
 
-            if (!File.Exists("data/docks_left.json") || !File.Exists("data/docks_right.json") || !File.Exists("data/docked_boats.json"))
+            if (!File.Exists("docks_left.json") || !File.Exists("docks_right.json") || !File.Exists("docked_boats.json"))
             {
                 DockedBoats = new List<Boat>();
                 ConstructDocks();
-                SetDocksToJsonFile(DocksLeft, "data/docks_left.json");
-                SetDocksToJsonFile(DocksRight, "data/docks_right.json");
-                SetDockedBoatsToJsonFile(DockedBoats, "data/docked_boats.json");
+                SetDocksToJsonFile(DocksLeft, "docks_left.json");
+                SetDocksToJsonFile(DocksRight, "docks_right.json");
+                SetDockedBoatsToJsonFile(DockedBoats, "docked_boats.json");
             }
             else
             {
-                DocksLeft = GetDocksFromJsonFile("data/docks_left.json");
-                DocksRight = GetDocksFromJsonFile("data/docks_right.json");
-                DockedBoats = GetDockedBoatsFromJsonFile("data/docked_boats.json");
+                DocksLeft = GetDocksFromJsonFile("docks_left.json");
+                DocksRight = GetDocksFromJsonFile("docks_right.json");
+                DockedBoats = GetDockedBoatsFromJsonFile("docked_boats.json");
             }
 
-            if (File.Exists("data/harbor_info.json"))
+            if (File.Exists("harbor_info.json"))
             {
-                List<int> harborInfo = GetHarborInfoFromJsonFile("data/harbor_info.json");
+                List<int> harborInfo = GetHarborInfoFromJsonFile("harbor_info.json");
                 RejectedBoats = harborInfo[0];
                 Day = harborInfo[1];
             }
@@ -51,10 +51,10 @@ namespace HarborSimuation
             DockIncomingBoats(GenerateIncomingBoats(numberOfIncomingBoats));
             Day++;
 
-            SetDocksToJsonFile(DocksLeft, "data/docks_left.json");
-            SetDocksToJsonFile(DocksRight, "data/docks_right.json");
-            SetDockedBoatsToJsonFile(DockedBoats, "data/docked_boats.json");
-            SetHarborInfoToJsonFile(PackHarborInfo(RejectedBoats, Day), "data/harbor_info.json");
+            SetDocksToJsonFile(DocksLeft, "docks_left.json");
+            SetDocksToJsonFile(DocksRight, "docks_right.json");
+            SetDockedBoatsToJsonFile(DockedBoats, "docked_boats.json");
+            SetHarborInfoToJsonFile(PackHarborInfo(RejectedBoats, Day), "harbor_info.json");
         }
 
         public void Clear()
@@ -64,10 +64,10 @@ namespace HarborSimuation
             RejectedBoats = 0;
             Day = 0;
 
-            SetDocksToJsonFile(DocksLeft, "data/docks_left.json");
-            SetDocksToJsonFile(DocksRight, "data/docks_right.json");
-            SetDockedBoatsToJsonFile(DockedBoats, "data/docked_boats.json");
-            SetHarborInfoToJsonFile(PackHarborInfo(RejectedBoats, Day), "data/harbor_info.json");
+            SetDocksToJsonFile(DocksLeft, "docks_left.json");
+            SetDocksToJsonFile(DocksRight, "docks_right.json");
+            SetDockedBoatsToJsonFile(DockedBoats, "docked_boats.json");
+            SetHarborInfoToJsonFile(PackHarborInfo(RejectedBoats, Day), "harbor_info.json");
         }
 
         // Private update methods
