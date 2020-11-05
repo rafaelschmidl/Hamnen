@@ -175,14 +175,14 @@
             </ScrollViewer>
             <TextBlock x:Name="Summary_Info" TextWrapping="Wrap" Height="125" Background="#FF151E78" Foreground="White" FontSize="14" UseLayoutRounding="True" ScrollViewer.CanContentScroll="True" Margin="0,24,0,0"/>
         </StackPanel>
-        <Grid Margin="0,618,0,0" Background="#FF100155">
-            <Button x:Name="Start_stop_button" Content="Start" Click="StartStopButton_Click" Margin="316,0,502,0" Width="186" Height="42"/>
-            <Button x:Name="Reset_button" Content="Clear" Click="ClearButton_Click" Margin="61,0,757,0" Width="186" Height="42"/>
-            <Label Content="Boats per day:" HorizontalAlignment="Left" Margin="590,11,0,0" VerticalAlignment="Top" Width="100" HorizontalContentAlignment="Left" FontSize="14" FontWeight="Normal" Foreground="White"/>
-            <Label x:Name="Boats_per_day_slider_value" Content="" HorizontalAlignment="Left" Margin="690,11,0,0" VerticalAlignment="Top" Width="50" HorizontalContentAlignment="Left" FontSize="14" FontWeight="Normal" Foreground="White"/>
+        <Grid Margin="0,618,0,0" Background="#FF010555">
+            <Button x:Name="Start_stop_button" Content="Start" Click="StartStopButton_Click" Margin="316,0,502,0" Width="186" Height="42" FontFamily="Consolas" FontWeight="Bold" FontSize="14"/>
+            <Button x:Name="Reset_button" Content="Clear" Click="ClearButton_Click" Margin="61,0,757,0" Width="186" Height="42" FontFamily="Consolas" FontWeight="Bold" FontSize="14"/>
+            <Label Content="Boats per day:" HorizontalAlignment="Left" Margin="590,11,0,0" VerticalAlignment="Top" Width="100" HorizontalContentAlignment="Left" FontWeight="Normal" Foreground="White" FontFamily="Consolas"/>
+            <Label x:Name="Boats_per_day_slider_value" Content="" HorizontalAlignment="Left" Margin="690,10,0,0" VerticalAlignment="Top" Width="100" HorizontalContentAlignment="Left" FontSize="14" FontWeight="Normal" Foreground="White" FontFamily="Consolas"/>
             <Slider x:Name="Boats_per_day_slider" HorizontalAlignment="Left" Margin="590,37,0,0" VerticalAlignment="Top" Width="345" ValueChanged="BoatsPerDaySlider_ValueChanged" TickPlacement="None" Maximum="20" SmallChange="1" Value="5" Minimum="1"/>
-            <Label Content="Day iteration speed:" HorizontalAlignment="Left" Margin="590,62,0,0" VerticalAlignment="Top" Width="135" HorizontalContentAlignment="Left" FontSize="14" FontWeight="Normal" Foreground="White"/>
-            <Label x:Name="Day_iteration_speed_slider_value" Content="" HorizontalAlignment="Left" Margin="725,62,0,0" VerticalAlignment="Top" Width="50" HorizontalContentAlignment="Left" FontSize="14" FontWeight="Normal" Foreground="White"/>
+            <Label Content="Day iteration speed:" HorizontalAlignment="Left" Margin="590,62,0,0" VerticalAlignment="Top" Width="140" HorizontalContentAlignment="Left" FontWeight="Normal" Foreground="White" FontFamily="Consolas"/>
+            <Label x:Name="Day_iteration_speed_slider_value" Content="" HorizontalAlignment="Left" Margin="730,62,0,0" VerticalAlignment="Top" Width="120" HorizontalContentAlignment="Left" FontSize="14" FontWeight="Normal" Foreground="White" FontFamily="Consolas"/>
             <Slider x:Name="Day_iteration_speed_slider" HorizontalAlignment="Left" Margin="590,90,0,0" VerticalAlignment="Top" Width="345" ValueChanged="DayIterationSpeedSlider_ValueChanged" TickPlacement="None" Maximum="4444" SmallChange="0" Value="2222" Minimum="111"/>
         </Grid>
     </Grid>

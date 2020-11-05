@@ -94,7 +94,7 @@ namespace HarborSimuation
         private void DayIterationSpeedSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             Slider slider = (Slider)sender;
-            Day_iteration_speed_slider_value.Content = slider.Value;
+            Day_iteration_speed_slider_value.Content = Math.Round(slider.Value).ToString();
             dayIteartionSpeed = (int)slider.Value;
         }
 
